@@ -71,13 +71,13 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/sun-data/optika",
+            "url": "https://github.com/Kankelborg-Group/msfc-ccd",
             "icon": "fa-brands fa-github",
             "type": "fontawesome",
         },
         {
             "name": "PyPI",
-            "url": "https://pypi.org/project/optika/",
+            "url": "https://pypi.org/project/msfc-ccd/",
             "icon": "fa-brands fa-python",
         },
     ],
