@@ -1,4 +1,4 @@
-name: Publish to PyPI and TestPyPI
+name: Publish to PyPI
 
 on:
   release:
@@ -28,5 +28,3 @@ jobs:
           --outdir dist/
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
