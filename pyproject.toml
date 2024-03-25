@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "msfc-ccd"
+authors = [
+    {name = "Roy T. Smart", email = "roytsmart@gmail.com"},
+]
+description = "A Python library for characterizing and using the CCD cameras developed by Marshall Space Flight Center."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "astropy",
+    "named-arrays",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+doc = [
+    "pytest",
+    "matplotlib",
+    "graphviz",
+    "sphinx-autodoc-typehints",
+    "sphinxcontrib-bibtex",
+    "pydata-sphinx-theme",
+    "ipykernel",
+    "jupyter-sphinx",
+    "sphinx-codeautolink",
+    "sphinx-favicon",
+]
+
+[project.urls]
+Homepage = "https://github.com/Kankelborg-Group/msfc-ccd"
+Documentation = "https://msfc-ccd.readthedocs.io/en/latest"
+
+[tool.setuptools_scm]
