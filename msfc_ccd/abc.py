@@ -2,4 +2,4 @@
 Abstract base classes used throughout this library.
 """
 
-from ._images.abc import *
+from ._images.abc import AbstractImageData, AbstractSensorData
