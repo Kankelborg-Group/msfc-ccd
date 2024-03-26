@@ -22,6 +22,11 @@ class AbstractSensorData(
 class SensorData(
     AbstractSensorData,
 ):
+    """
+    A class designed to represent a sequence of images captured by an
+    MSFC camera.
+    """
+
     data: na.AbstractScalar = dataclasses.MISSING
     """The underlying array storing the image data."""
 
