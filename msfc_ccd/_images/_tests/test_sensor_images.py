@@ -67,7 +67,7 @@ class AbstractTestAbstractSensorData(
             temperature_adc_2=22,
             temperature_adc_3=23,
             temperature_adc_4=24,
-        )
+        ),
     ],
 )
 class TestSensorData(
