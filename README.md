@@ -8,3 +8,11 @@
 [![PyPI version](https://badge.fury.io/py/msfc-ccd.svg)](https://badge.fury.io/py/msfc-ccd)
 
 A Python library for characterizing and using the CCD cameras developed by Marshall Space Flight Center.
+
+## Installation
+
+`msfc-ccd` is available on PyPI and can be installed using pip:
+
+```shell
+pip install msfc-ccd
+```
