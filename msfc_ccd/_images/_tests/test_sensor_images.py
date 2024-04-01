@@ -26,14 +26,14 @@ class AbstractTestAbstractSensorData(
             serial_number="SN-001",
             run_mode="sequence",
             status="completed",
-            voltage_fpga_vccint=5,
-            voltage_fpga_vccaux=6,
-            voltage_fpga_vccbram=7,
-            temperature_fpga=20,
-            temperature_adc_1=21,
-            temperature_adc_2=22,
-            temperature_adc_3=23,
-            temperature_adc_4=24,
+            voltage_fpga_vccint=5 * u.V,
+            voltage_fpga_vccaux=6 * u.V,
+            voltage_fpga_vccbram=7 * u.V,
+            temperature_fpga=20 * u.deg_C,
+            temperature_adc_1=21 * u.deg_C,
+            temperature_adc_2=22 * u.deg_C,
+            temperature_adc_3=23 * u.deg_C,
+            temperature_adc_4=24 * u.deg_C,
         ),
         msfc_ccd.SensorData(
             data=na.random.uniform(
@@ -59,14 +59,28 @@ class AbstractTestAbstractSensorData(
             serial_number="SN-001",
             run_mode="sequence",
             status="completed",
-            voltage_fpga_vccint=5,
-            voltage_fpga_vccaux=6,
-            voltage_fpga_vccbram=7,
-            temperature_fpga=20,
-            temperature_adc_1=21,
-            temperature_adc_2=22,
-            temperature_adc_3=23,
-            temperature_adc_4=24,
+            voltage_fpga_vccint=5 * u.V,
+            voltage_fpga_vccaux=6 * u.V,
+            voltage_fpga_vccbram=7 * u.V,
+            temperature_fpga=20 * u.deg_C,
+            temperature_adc_1=21 * u.deg_C,
+            temperature_adc_2=22 * u.deg_C,
+            temperature_adc_3=23 * u.deg_C,
+            temperature_adc_4=24 * u.deg_C,
+        ),
+        msfc_ccd.SensorData.from_fits(
+            path=msfc_ccd.samples.path_fe55_esis1,
+        ),
+        msfc_ccd.SensorData.from_fits(
+            path=na.ScalarArray(
+                ndarray=np.array(
+                    [
+                        msfc_ccd.samples.path_fe55_esis1,
+                        msfc_ccd.samples.path_fe55_esis3,
+                    ]
+                ),
+                axes="time",
+            )
         ),
     ],
 )

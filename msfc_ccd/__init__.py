@@ -7,5 +7,6 @@ __all__ = [
     "abc",
 ]
 
+from . import samples
 from ._images import SensorData
 from . import abc
