@@ -1,3 +1,7 @@
+"""
+Sample FITS files gathered from the MSFC cameras.
+"""
+
 import pathlib
 
 __all__ = [
