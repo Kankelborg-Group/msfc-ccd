@@ -41,4 +41,7 @@ doc = [
 Homepage = "https://github.com/Kankelborg-Group/msfc-ccd"
 Documentation = "https://msfc-ccd.readthedocs.io/en/latest"
 
+[tool.setuptools]
+packages = ["msfc_ccd"]
+
 [tool.setuptools_scm]
