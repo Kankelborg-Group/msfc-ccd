@@ -3,6 +3,7 @@ A Python package for the CCD cameras developed by MSFC.
 """
 
 __all__ = [
+    "samples",
     "SensorData",
     "abc",
 ]
