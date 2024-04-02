@@ -30,7 +30,7 @@ class AbstractTestAbstractTapImage(
         msfc_ccd.TapData.from_sensor_data(
             a=msfc_ccd.fits.open(msfc_ccd.samples.path_fe55_esis1)
         ),
-    ]
+    ],
 )
 class TestTapImage(
     AbstractTestAbstractTapImage,

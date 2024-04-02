@@ -25,7 +25,7 @@ class AbstractTapData(
     """The number of taps along the horizontal axis of the CCD sensor."""
 
     num_tap_y: ClassVar[int] = 2
-    """The number of taps along the vertical axis of the CCD sensor."""\
+    """The number of taps along the vertical axis of the CCD sensor."""
 
     @property
     @abc.abstractmethod

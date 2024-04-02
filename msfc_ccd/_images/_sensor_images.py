@@ -8,6 +8,7 @@ import astropy.io.fits
 import named_arrays as na
 import msfc_ccd
 from ._images import AbstractImageData
+
 if TYPE_CHECKING:
     from ._tap_images import AbstractTapData
 
@@ -39,7 +40,7 @@ class AbstractSensorData(
         self,
         axis_tap_x: str = "tap_x",
         axis_tap_y: str = "tap_y",
-    ) -> 'AbstractTapData':
+    ) -> "AbstractTapData":
         """
         Split the images into separate images for each tap.
 
