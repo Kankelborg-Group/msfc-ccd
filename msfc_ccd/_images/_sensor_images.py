@@ -178,7 +178,7 @@ class SensorData(
 
         path = na.as_named_array(path)
 
-        time = np.empty_like(path, dtype=float)
+        time = np.zeros_like(path, dtype=float)
         time.ndarray = astropy.time.Time(time.ndarray, format="jd")
 
         timedelta = np.empty_like(path, dtype=np.int64)
