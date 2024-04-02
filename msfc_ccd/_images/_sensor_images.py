@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Self, TYPE_CHECKING
 import dataclasses
 import pathlib
 import numpy as np
@@ -6,7 +6,10 @@ import astropy.units as u
 import astropy.time
 import astropy.io.fits
 import named_arrays as na
+import msfc_ccd
 from ._images import AbstractImageData
+if TYPE_CHECKING:
+    from ._tap_images import AbstractTapData
 
 __all__ = [
     "SensorData",
@@ -20,6 +23,40 @@ class AbstractSensorData(
     """
     An interface for representing data captured by an entire image sensor.
     """
+
+    @property
+    def pixel(self) -> dict[str, na.AbstractScalarArray]:
+        axis_x = self.axis_x
+        axis_y = self.axis_y
+        shape = self.data.shape
+        shape_img = {
+            axis_x: shape[axis_x],
+            axis_y: shape[axis_y],
+        }
+        return na.indices(shape_img)
+
+    def taps(
+        self,
+        axis_tap_x: str = "tap_x",
+        axis_tap_y: str = "tap_y",
+    ) -> 'AbstractTapData':
+        """
+        Split the images into separate images for each tap.
+
+        Parameters
+        ----------
+        axis_tap_x
+            The name of the logical axis corresponding to the horizontal
+            variation of the tap index.
+        axis_tap_y
+            The name of the logical axis corresponding to the vertical
+            variation of the tap index.
+        """
+        return msfc_ccd.TapData.from_sensor_data(
+            a=self,
+            axis_tap_x=axis_tap_x,
+            axis_tap_y=axis_tap_y,
+        )
 
 
 @dataclasses.dataclass(eq=False, repr=False)
