@@ -1,4 +1,5 @@
-from typing import Self, TYPE_CHECKING
+from __future__ import annotations
+from typing import Self
 import dataclasses
 import pathlib
 import numpy as np
@@ -8,9 +9,6 @@ import astropy.io.fits
 import named_arrays as na
 import msfc_ccd
 from ._images import AbstractImageData
-
-if TYPE_CHECKING:
-    from ._tap_images import AbstractTapData
 
 __all__ = [
     "SensorData",
@@ -40,7 +38,7 @@ class AbstractSensorData(
         self,
         axis_tap_x: str = "tap_x",
         axis_tap_y: str = "tap_y",
-    ) -> "AbstractTapData":
+    ) -> msfc_ccd.TapData:
         """
         Split the images into separate images for each tap.
 
