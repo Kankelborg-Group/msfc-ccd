@@ -10,14 +10,16 @@ from . import test_images
 class AbstractTestAbstractSensorData(
     test_images.AbstractTestAbstractImageData,
 ):
-    pass
+    def test_taps(self, a: msfc_ccd.abc.AbstractSensorData):
+        result = a.taps()
+        assert isinstance(result, msfc_ccd.TapData)
 
 
 @pytest.mark.parametrize(
     argnames="a",
     argvalues=[
         msfc_ccd.SensorData(
-            data=na.random.uniform(0, 1, shape_random=dict(x=21, y=11)),
+            data=na.random.uniform(0, 1, shape_random=dict(x=22, y=12)),
             axis_x="x",
             axis_y="y",
             time=astropy.time.Time("2024-03-25T20:49"),
@@ -39,7 +41,7 @@ class AbstractTestAbstractSensorData(
             data=na.random.uniform(
                 low=0,
                 high=1,
-                shape_random=dict(t=5, x=21, y=11),
+                shape_random=dict(t=5, x=22, y=12),
             ),
             axis_x="x",
             axis_y="y",

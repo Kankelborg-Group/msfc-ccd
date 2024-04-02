@@ -14,6 +14,12 @@ class AbstractTestAbstractImageData(
         result = a.data
         assert result.ndim >= 2
 
+    def test_pixel(self, a: msfc_ccd.abc.AbstractImageData):
+        result = a.pixel
+        for ax in result:
+            assert isinstance(ax, str)
+            assert isinstance(result[ax], na.AbstractScalarArray)
+
     def test_axis_x(self, a: msfc_ccd.abc.AbstractImageData):
         result = a.axis_x
         assert isinstance(result, str)
@@ -23,6 +29,14 @@ class AbstractTestAbstractImageData(
         result = a.axis_y
         assert isinstance(result, str)
         assert result in a.data.shape
+
+    def test_num_x(self, a: msfc_ccd.abc.AbstractImageData):
+        result = a.num_x
+        assert isinstance(result, int)
+
+    def test_num_y(self, a: msfc_ccd.abc.AbstractImageData):
+        result = a.num_y
+        assert isinstance(result, int)
 
     def test_time(self, a: msfc_ccd.abc.AbstractImageData):
         result = a.time

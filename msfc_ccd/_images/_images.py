@@ -26,6 +26,13 @@ class AbstractImageData(
 
     @property
     @abc.abstractmethod
+    def pixel(self) -> dict[str, na.AbstractScalarArray]:
+        """
+        The 2-dimensional index of each pixel in the image.
+        """
+
+    @property
+    @abc.abstractmethod
     def axis_x(self) -> str:
         """
         The name of the logical axis representing the horizontal dimension of
@@ -39,6 +46,20 @@ class AbstractImageData(
         The name of the logical axis representing the vertical dimension of
         the images.
         """
+
+    @property
+    def num_x(self) -> int:
+        """
+        The number of pixels along the x-axis.
+        """
+        return self.data.shape[self.axis_x]
+
+    @property
+    def num_y(self) -> int:
+        """
+        The number of pixels along the y-axis.
+        """
+        return self.data.shape[self.axis_y]
 
     @property
     @abc.abstractmethod
