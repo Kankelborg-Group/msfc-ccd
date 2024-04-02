@@ -1,3 +1,7 @@
+"""
+Utilities for working with FITS files.
+"""
+
 import pathlib
 import named_arrays as na
 import msfc_ccd
