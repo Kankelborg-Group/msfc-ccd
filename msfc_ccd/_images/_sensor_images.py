@@ -252,9 +252,9 @@ class SensorData(
             time[index] = astropy.time.Time(header["IMG_TS"])
             timedelta[index] = header["MEAS_EXP"]
             timedelta_requested[index] = header["IMG_EXP"] * u.ms
-            serial_number[index] = header["CAM_SN"]
-            run_mode[index] = header["RUN_MODE"]
-            status[index] = header["IMG_STAT"]
+            serial_number[index] = header.get("CAM_SN")
+            run_mode[index] = header.get("RUN_MODE")
+            status[index] = header.get("IMG_STAT")
             voltage_fpga_vccint[index] = header["FPGAVINT"]
             voltage_fpga_vccaux[index] = header["FPGAVAUX"]
             voltage_fpga_vccbram[index] = header["FPGAVBRM"]
