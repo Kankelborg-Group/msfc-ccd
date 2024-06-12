@@ -1,4 +1,4 @@
-from typing import Self, ClassVar
+from typing_extensions import Self, ClassVar
 import abc
 import dataclasses
 import astropy.units as u
