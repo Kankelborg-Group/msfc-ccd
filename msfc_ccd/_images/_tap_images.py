@@ -1,4 +1,4 @@
-from typing_extensions import Self, ClassVar
+
 import abc
 import dataclasses
 import astropy.units as u
@@ -6,7 +6,6 @@ import astropy.time
 import named_arrays as na
 from .._sensors import AbstractSensor
 from ._images import AbstractImageData
-from ._sensor_images import AbstractSensorData
 
 __all__ = [
     "TapData",

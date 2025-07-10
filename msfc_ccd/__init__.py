@@ -5,6 +5,7 @@ A Python package for the CCD cameras developed by MSFC.
 __all__ = [
     "abc",
     "samples",
+    "TeledyneCCD230",
     "SensorData",
     "TapData",
     "fits",
