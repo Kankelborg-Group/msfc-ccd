@@ -3,14 +3,16 @@ A Python package for the CCD cameras developed by MSFC.
 """
 
 __all__ = [
+    "abc",
     "samples",
+    "TeledyneCCD230",
     "SensorData",
     "TapData",
     "fits",
-    "abc",
 ]
 
+from . import abc
 from . import samples
+from ._sensors import TeledyneCCD230
 from ._images import SensorData, TapData
 from . import fits
-from . import abc

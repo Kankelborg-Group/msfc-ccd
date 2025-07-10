@@ -53,6 +53,11 @@ class AbstractTestAbstractImageData(
         assert np.all(result >= 1 * u.s)
         assert np.all(result < 1000 * u.s)
 
+    def test_sensor(self, a: msfc_ccd.abc.AbstractImageData):
+        result = a.sensor
+        if result is not None:
+            assert isinstance(result, msfc_ccd.abc.AbstractSensor)
+
     def test_serial_number(self, a: msfc_ccd.abc.AbstractImageData):
         result = a.serial_number
         assert isinstance(result, (str, na.AbstractScalar))

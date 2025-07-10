@@ -8,6 +8,7 @@ import astropy.time
 import astropy.io.fits
 import named_arrays as na
 import msfc_ccd
+from .._sensors import AbstractSensor
 from ._images import AbstractImageData
 
 __all__ = [
@@ -51,10 +52,66 @@ class AbstractSensorData(
             The name of the logical axis corresponding to the vertical
             variation of the tap index.
         """
-        return msfc_ccd.TapData.from_sensor_data(
-            a=self,
+        axis_x = self.axis_x
+        axis_y = self.axis_y
+
+        num_x = self.num_x
+        num_y = self.num_y
+
+        num_tap_x = self.sensor.num_tap_x
+        num_tap_y = self.sensor.num_tap_y
+
+        shape_img = {axis_x: num_x, axis_y: num_y}
+
+        num_x_new = num_x // num_tap_x
+        num_y_new = num_y // num_tap_y
+
+        slice_left_x = slice(None, num_x_new)
+        slice_left_y = slice(None, num_y_new)
+
+        slice_right_x = slice(None, num_x_new - 1, -1)
+        slice_right_y = slice(None, num_y_new - 1, -1)
+
+        slices_x = [slice_left_x, slice_right_x]
+        slices_y = [slice_left_y, slice_right_y]
+
+        pixel = self.pixel
+
+        for ax in pixel:
+            p = pixel[ax].broadcast_to(shape_img)
+            pixel[ax] = na.stack(
+                arrays=[
+                    na.stack(
+                        arrays=[p[{axis_x: sx, axis_y: sy}] for sy in slices_y],
+                        axis=axis_tap_y,
+                    )
+                    for sx in slices_x
+                ],
+                axis=axis_tap_x,
+            )
+
+        return msfc_ccd.TapData(
+            data=self.data[pixel],
+            pixel=pixel,
+            axis_x=self.axis_x,
+            axis_y=self.axis_y,
             axis_tap_x=axis_tap_x,
             axis_tap_y=axis_tap_y,
+            time=self.time,
+            timedelta=self.timedelta,
+            timedelta_requested=self.timedelta_requested,
+            sensor=self.sensor,
+            serial_number=self.serial_number,
+            run_mode=self.run_mode,
+            status=self.status,
+            voltage_fpga_vccint=self.voltage_fpga_vccint,
+            voltage_fpga_vccaux=self.voltage_fpga_vccaux,
+            voltage_fpga_vccbram=self.voltage_fpga_vccbram,
+            temperature_fpga=self.temperature_fpga,
+            temperature_adc_1=self.temperature_adc_1,
+            temperature_adc_2=self.temperature_adc_2,
+            temperature_adc_3=self.temperature_adc_3,
+            temperature_adc_4=self.temperature_adc_4,
         )
 
 
@@ -84,6 +141,7 @@ class SensorData(
         # Load the sample image
         image = msfc_ccd.SensorData.from_fits(
             path=msfc_ccd.samples.path_fe55_esis1,
+            sensor=msfc_ccd.TeledyneCCD230(),
             axis_x=axis_x,
             axis_y=axis_y,
         )
@@ -123,6 +181,9 @@ class SensorData(
 
     timedelta_requested: u.Quantity | na.AbstractScalar = dataclasses.MISSING
     """The requested exposure time of each image."""
+
+    sensor: AbstractSensor = dataclasses.MISSING
+    """A model of the sensor used to capture these images."""
 
     serial_number: None | str | na.AbstractScalar = None
     """The serial number of the camera that captured each image."""
@@ -192,6 +253,7 @@ class SensorData(
     def from_fits(
         cls,
         path: str | pathlib.Path | na.AbstractScalarArray,
+        sensor: AbstractSensor,
         axis_x: str = "detector_x",
         axis_y: str = "detector_y",
     ) -> Self:
@@ -204,6 +266,8 @@ class SensorData(
         path
             Either a single path or an array of paths pointing to the FITS files
             to load.
+        sensor
+            A model of the sensor used to capture these images.
         axis_x
             The name of the logical axis representing the horizontal dimension of
             the images.
@@ -281,6 +345,7 @@ class SensorData(
             time=time,
             timedelta=timedelta,
             timedelta_requested=timedelta_requested,
+            sensor=sensor,
             serial_number=serial_number,
             run_mode=run_mode,
             status=status,

@@ -1,11 +1,10 @@
-from typing_extensions import Self, ClassVar
 import abc
 import dataclasses
 import astropy.units as u
 import astropy.time
 import named_arrays as na
+from .._sensors import AbstractSensor
 from ._images import AbstractImageData
-from ._sensor_images import AbstractSensorData
 
 __all__ = [
     "TapData",
@@ -20,12 +19,6 @@ class AbstractTapData(
     An interface for representing data gathered by a single tap on an image
     sensor.
     """
-
-    num_tap_x: ClassVar[int] = 2
-    """The number of taps along the horizontal axis of the CCD sensor."""
-
-    num_tap_y: ClassVar[int] = 2
-    """The number of taps along the vertical axis of the CCD sensor."""
 
     @property
     @abc.abstractmethod
@@ -152,6 +145,9 @@ class TapData(
     timedelta_requested: u.Quantity | na.AbstractScalar = dataclasses.MISSING
     """The requested exposure time of each image."""
 
+    sensor: AbstractSensor = dataclasses.MISSING
+    """A model of the sensor used to capture these images."""
+
     serial_number: None | str | na.AbstractScalar = None
     """The serial number of the camera that captured each image."""
 
@@ -184,87 +180,3 @@ class TapData(
 
     temperature_adc_4: u.Quantity | na.AbstractScalar = 0
     """Temperature 4 of the ADC when each image was captured."""
-
-    @classmethod
-    def from_sensor_data(
-        cls,
-        a: AbstractSensorData,
-        axis_tap_x: str = "tap_x",
-        axis_tap_y: str = "tap_y",
-    ) -> Self:
-        """
-        Creates a new instance of this class using an instance of
-        :class:`msfc_ccd.SensorData`.
-
-        Parameters
-        ----------
-        a
-            An instance of :class:`msfc_ccd.SensorData` to convert.
-        axis_tap_x
-            The name of the logical axis corresponding to the horizontal
-            variation of the tap index.
-        axis_tap_y
-            The name of the logical axis corresponding to the vertical
-            variation of the tap index.
-        """
-
-        axis_x = a.axis_x
-        axis_y = a.axis_y
-
-        num_x = a.num_x
-        num_y = a.num_y
-
-        num_tap_x = cls.num_tap_x
-        num_tap_y = cls.num_tap_y
-
-        shape_img = {axis_x: num_x, axis_y: num_y}
-
-        num_x_new = num_x // num_tap_x
-        num_y_new = num_y // num_tap_y
-
-        slice_left_x = slice(None, num_x_new)
-        slice_left_y = slice(None, num_y_new)
-
-        slice_right_x = slice(None, num_x_new - 1, -1)
-        slice_right_y = slice(None, num_y_new - 1, -1)
-
-        slices_x = [slice_left_x, slice_right_x]
-        slices_y = [slice_left_y, slice_right_y]
-
-        pixel = a.pixel
-
-        for ax in pixel:
-            p = pixel[ax].broadcast_to(shape_img)
-            pixel[ax] = na.stack(
-                arrays=[
-                    na.stack(
-                        arrays=[p[{axis_x: sx, axis_y: sy}] for sy in slices_y],
-                        axis=axis_tap_y,
-                    )
-                    for sx in slices_x
-                ],
-                axis=axis_tap_x,
-            )
-
-        return cls(
-            data=a.data[pixel],
-            pixel=pixel,
-            axis_x=a.axis_x,
-            axis_y=a.axis_y,
-            axis_tap_x=axis_tap_x,
-            axis_tap_y=axis_tap_y,
-            time=a.time,
-            timedelta=a.timedelta,
-            timedelta_requested=a.timedelta_requested,
-            serial_number=a.serial_number,
-            run_mode=a.run_mode,
-            status=a.status,
-            voltage_fpga_vccint=a.voltage_fpga_vccint,
-            voltage_fpga_vccaux=a.voltage_fpga_vccaux,
-            voltage_fpga_vccbram=a.voltage_fpga_vccbram,
-            temperature_fpga=a.temperature_fpga,
-            temperature_adc_1=a.temperature_adc_1,
-            temperature_adc_2=a.temperature_adc_2,
-            temperature_adc_3=a.temperature_adc_3,
-            temperature_adc_4=a.temperature_adc_4,
-        )

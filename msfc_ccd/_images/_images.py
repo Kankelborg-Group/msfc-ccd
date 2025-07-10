@@ -4,6 +4,7 @@ import astropy.units as u
 import astropy.time
 import named_arrays as na
 import optika
+from .._sensors import AbstractSensor
 
 __all__ = []
 
@@ -75,6 +76,13 @@ class AbstractImageData(
     @abc.abstractmethod
     def timedelta_requested(self) -> u.Quantity | na.AbstractScalar:
         """The requested exposure time of each image."""
+
+    @property
+    @abc.abstractmethod
+    def sensor(self) -> AbstractSensor:
+        """
+        A model of the sensor used to capture these images.
+        """
 
     @property
     @abc.abstractmethod

@@ -27,9 +27,7 @@ class AbstractTestAbstractTapImage(
 @pytest.mark.parametrize(
     argnames="a",
     argvalues=[
-        msfc_ccd.TapData.from_sensor_data(
-            a=msfc_ccd.fits.open(msfc_ccd.samples.path_fe55_esis1)
-        ),
+        msfc_ccd.fits.open(msfc_ccd.samples.path_fe55_esis1).taps(),
     ],
 )
 class TestTapImage(
