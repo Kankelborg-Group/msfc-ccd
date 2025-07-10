@@ -25,6 +25,7 @@ class AbstractTestAbstractSensorData(
             time=astropy.time.Time("2024-03-25T20:49"),
             timedelta=9.98 * u.s,
             timedelta_requested=10 * u.s,
+            sensor=msfc_ccd.TeledyneCCD230(),
             serial_number="SN-001",
             run_mode="sequence",
             status="completed",
@@ -58,6 +59,7 @@ class AbstractTestAbstractSensorData(
                 axes="t",
             ),
             timedelta_requested=10 * u.s,
+            sensor=msfc_ccd.TeledyneCCD230(),
             serial_number="SN-001",
             run_mode="sequence",
             status="completed",
@@ -72,6 +74,7 @@ class AbstractTestAbstractSensorData(
         ),
         msfc_ccd.SensorData.from_fits(
             path=msfc_ccd.samples.path_fe55_esis1,
+            sensor=msfc_ccd.TeledyneCCD230(),
         ),
         msfc_ccd.SensorData.from_fits(
             path=na.ScalarArray(
@@ -82,7 +85,8 @@ class AbstractTestAbstractSensorData(
                     ]
                 ),
                 axes="time",
-            )
+            ),
+            sensor=msfc_ccd.TeledyneCCD230(),
         ),
     ],
 )

@@ -14,6 +14,7 @@ __all__ = [
 
 def open(
     path: str | pathlib.Path | na.AbstractScalarArray,
+    sensor: None | msfc_ccd.abc.AbstractSensor = None,
     axis_x: str = "detector_x",
     axis_y: str = "detector_y",
 ) -> msfc_ccd.SensorData:
@@ -28,6 +29,10 @@ def open(
     path
         Either a single path or an array of paths pointing to the FITS files
         to open.
+    sensor
+        A model of the sensor used to capture the images being loaded.
+        If :obj:`None` (the default), the :class:`msfc_ccd.TeledyneCCD230`
+        will be used.
     axis_x
         The name of the logical axis representing the horizontal dimension of
         the images.
@@ -115,8 +120,13 @@ def open(
             ax=axs,
         );
     """
+
+    if sensor is None:
+        sensor = msfc_ccd.TeledyneCCD230()
+
     return msfc_ccd.SensorData.from_fits(
         path=path,
+        sensor=sensor,
         axis_x=axis_x,
         axis_y=axis_y,
     )
