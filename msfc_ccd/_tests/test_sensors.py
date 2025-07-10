@@ -29,7 +29,7 @@ class AbstractTestAbstractSensor:
     argnames="sensor",
     argvalues=[
         msfc_ccd.TeledyneCCD230,
-    ]
+    ],
 )
 class TestTeledyneCCD230(
     AbstractTestAbstractSensor,
