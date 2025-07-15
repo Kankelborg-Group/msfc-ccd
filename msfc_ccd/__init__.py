@@ -6,6 +6,7 @@ __all__ = [
     "abc",
     "samples",
     "TeledyneCCD230",
+    "ImageHeader",
     "SensorData",
     "TapData",
     "fits",
@@ -14,5 +15,5 @@ __all__ = [
 from . import abc
 from . import samples
 from ._sensors import TeledyneCCD230
-from ._images import SensorData, TapData
+from ._images import ImageHeader, SensorData, TapData
 from . import fits

@@ -10,12 +10,12 @@ class AbstractTestAbstractTapImage(
     def test_axis_tap_x(self, a: msfc_ccd.abc.AbstractTapData):
         result = a.axis_tap_x
         assert isinstance(result, str)
-        assert result in a.data.shape
+        assert result in a.outputs.shape
 
     def test_axis_tap_y(self, a: msfc_ccd.abc.AbstractTapData):
         result = a.axis_tap_y
         assert isinstance(result, str)
-        assert result in a.data.shape
+        assert result in a.outputs.shape
 
     def test_tap(self, a: msfc_ccd.abc.AbstractTapData):
         result = a.tap
