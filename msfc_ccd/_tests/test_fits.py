@@ -23,4 +23,4 @@ import msfc_ccd
 def test_open(path: str | pathlib.Path | na.AbstractScalarArray):
     result = msfc_ccd.fits.open(path)
     assert isinstance(result, msfc_ccd.SensorData)
-    assert result.data.sum() != 0
+    assert result.outputs.sum() != 0
