@@ -14,6 +14,11 @@ __all__ = [
 class ImageHeader(
     na.AbstractExplicitCartesianVectorArray,
 ):
+    """
+    A class designed to represent the header information for a sequence
+    of images.
+    """
+
     pixel: na.AbstractCartesian2dVectorArray = dataclasses.MISSING
     """The indices of each pixel in the image."""
 
