@@ -109,7 +109,7 @@ def open(
         # Display the sample images
         fig, axs = na.plt.subplots(
             axis_rows=axis_time,
-            nrows=image.data.shape[axis_time],
+            nrows=image.outputs.shape[axis_time],
             sharex=True,
             constrained_layout=True,
         )
