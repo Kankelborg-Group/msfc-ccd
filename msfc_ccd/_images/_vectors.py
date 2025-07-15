@@ -6,7 +6,7 @@ import astropy.time
 import named_arrays as na
 
 __all__ = [
-    "ImageHeader"
+    "ImageHeader",
 ]
 
 
