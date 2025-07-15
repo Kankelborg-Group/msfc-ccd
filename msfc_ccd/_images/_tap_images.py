@@ -89,17 +89,17 @@ class TapData(
         # Display the four images
         fig, axs = na.plt.subplots(
             axis_rows=axis_tap_y,
-            nrows=taps.data.shape[axis_tap_y],
+            nrows=taps.outputs.shape[axis_tap_y],
             axis_cols=axis_tap_x,
-            ncols=taps.data.shape[axis_tap_x],
+            ncols=taps.outputs.shape[axis_tap_x],
             sharex=True,
             sharey=True,
             constrained_layout=True,
         );
         axs = axs[{axis_tap_y: slice(None, None, -1)}]
         na.plt.pcolormesh(
-            *taps.pixel.values(),
-            C=taps.data,
+            taps.inputs.pixel,
+            C=taps.outputs,
             ax=axs,
         );
 
