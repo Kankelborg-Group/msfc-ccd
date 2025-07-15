@@ -73,8 +73,8 @@ class ImageHeader(
 
     @classmethod
     def from_scalar(
-            cls: Type[Self],
-            scalar: na.AbstractScalar,
-            like: None | na.AbstractExplicitVectorArray = None,
+        cls: Type[Self],
+        scalar: na.AbstractScalar,
+        like: None | na.AbstractExplicitVectorArray = None,
     ) -> Self:
         raise NotImplementedError
