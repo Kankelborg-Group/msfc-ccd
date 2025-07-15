@@ -67,7 +67,7 @@ def open(
             constrained_layout=True,
         )
         im = na.plt.imshow(
-            image.data,
+            image.outputs,
             axis_x=axis_x,
             axis_y=axis_y,
             ax=ax,
@@ -114,7 +114,7 @@ def open(
             constrained_layout=True,
         )
         im = na.plt.imshow(
-            image.data,
+            image.outputs,
             axis_x=axis_x,
             axis_y=axis_y,
             ax=axs,
