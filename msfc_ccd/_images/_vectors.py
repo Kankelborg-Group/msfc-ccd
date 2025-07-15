@@ -60,15 +60,15 @@ class ImageHeader(
     """Temperature 4 of the ADC when each image was captured."""
 
     @property
-    def type_abstract(self: Self) -> Type[Self]:
+    def type_abstract(self: Self) -> Type[Self]:  # pragma: nocover
         return ImageHeader
 
     @property
-    def type_explicit(self: Self) -> Type[Self]:
+    def type_explicit(self: Self) -> Type[Self]:  # pragma: nocover
         return ImageHeader
 
     @property
-    def type_matrix(self) -> Type[na.AbstractCartesianMatrixArray]:
+    def type_matrix(self) -> Type[na.AbstractCartesianMatrixArray]:  # pragma: nocover
         raise NotImplementedError
 
     @classmethod
@@ -76,5 +76,5 @@ class ImageHeader(
         cls: Type[Self],
         scalar: na.AbstractScalar,
         like: None | na.AbstractExplicitVectorArray = None,
-    ) -> Self:
+    ) -> Self:  # pragma: nocover
         raise NotImplementedError
