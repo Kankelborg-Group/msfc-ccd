@@ -67,7 +67,7 @@ def open(
             constrained_layout=True,
         )
         im = na.plt.imshow(
-            image.data,
+            image.outputs,
             axis_x=axis_x,
             axis_y=axis_y,
             ax=ax,
@@ -109,12 +109,12 @@ def open(
         # Display the sample images
         fig, axs = na.plt.subplots(
             axis_rows=axis_time,
-            nrows=image.data.shape[axis_time],
+            nrows=image.outputs.shape[axis_time],
             sharex=True,
             constrained_layout=True,
         )
         im = na.plt.imshow(
-            image.data,
+            image.outputs,
             axis_x=axis_x,
             axis_y=axis_y,
             ax=axs,

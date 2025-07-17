@@ -9,6 +9,7 @@ import astropy.io.fits
 import named_arrays as na
 import msfc_ccd
 from .._sensors import AbstractSensor
+from ._vectors import ImageHeader
 from ._images import AbstractImageData
 
 __all__ = [
@@ -23,17 +24,6 @@ class AbstractSensorData(
     """
     An interface for representing data captured by an entire image sensor.
     """
-
-    @property
-    def pixel(self) -> dict[str, na.AbstractScalarArray]:
-        axis_x = self.axis_x
-        axis_y = self.axis_y
-        shape = self.data.shape
-        shape_img = {
-            axis_x: shape[axis_x],
-            axis_y: shape[axis_y],
-        }
-        return na.indices(shape_img)
 
     def taps(
         self,
@@ -61,57 +51,37 @@ class AbstractSensorData(
         num_tap_x = self.sensor.num_tap_x
         num_tap_y = self.sensor.num_tap_y
 
-        shape_img = {axis_x: num_x, axis_y: num_y}
-
         num_x_new = num_x // num_tap_x
         num_y_new = num_y // num_tap_y
 
-        slice_left_x = slice(None, num_x_new)
-        slice_left_y = slice(None, num_y_new)
+        range_left_x = na.arange(0, num_x_new, axis=axis_x)
+        range_left_y = na.arange(0, num_y_new, axis=axis_y)
 
-        slice_right_x = slice(None, num_x_new - 1, -1)
-        slice_right_y = slice(None, num_y_new - 1, -1)
+        range_right_x = na.arange(num_x - 1, num_x_new - 1, axis=axis_x, step=-1)
+        range_right_y = na.arange(num_y - 1, num_y_new - 1, axis=axis_y, step=-1)
 
-        slices_x = [slice_left_x, slice_right_x]
-        slices_y = [slice_left_y, slice_right_y]
+        ranges_x = [range_left_x, range_right_x]
+        ranges_y = [range_left_y, range_right_y]
 
-        pixel = self.pixel
+        indices_x = na.stack(ranges_x, axis=axis_tap_x)
+        indices_y = na.stack(ranges_y, axis=axis_tap_y)
 
-        for ax in pixel:
-            p = pixel[ax].broadcast_to(shape_img)
-            pixel[ax] = na.stack(
-                arrays=[
-                    na.stack(
-                        arrays=[p[{axis_x: sx, axis_y: sy}] for sy in slices_y],
-                        axis=axis_tap_y,
-                    )
-                    for sx in slices_x
-                ],
-                axis=axis_tap_x,
-            )
+        indices = {
+            axis_x: indices_x,
+            axis_y: indices_y,
+        }
 
         return msfc_ccd.TapData(
-            data=self.data[pixel],
-            pixel=pixel,
+            inputs=dataclasses.replace(
+                self.inputs,
+                pixel=self.inputs.pixel[indices],
+            ),
+            outputs=self.outputs[indices],
             axis_x=self.axis_x,
             axis_y=self.axis_y,
             axis_tap_x=axis_tap_x,
             axis_tap_y=axis_tap_y,
-            time=self.time,
-            timedelta=self.timedelta,
-            timedelta_requested=self.timedelta_requested,
             sensor=self.sensor,
-            serial_number=self.serial_number,
-            run_mode=self.run_mode,
-            status=self.status,
-            voltage_fpga_vccint=self.voltage_fpga_vccint,
-            voltage_fpga_vccaux=self.voltage_fpga_vccaux,
-            voltage_fpga_vccbram=self.voltage_fpga_vccbram,
-            temperature_fpga=self.temperature_fpga,
-            temperature_adc_1=self.temperature_adc_1,
-            temperature_adc_2=self.temperature_adc_2,
-            temperature_adc_3=self.temperature_adc_3,
-            temperature_adc_4=self.temperature_adc_4,
         )
 
 
@@ -151,15 +121,22 @@ class SensorData(
             constrained_layout=True,
         )
         im = na.plt.imshow(
-            image.data,
+            image.outputs,
             axis_x=axis_x,
             axis_y=axis_y,
             ax=ax,
         );
     """
 
-    data: na.AbstractScalar = dataclasses.MISSING
-    """The underlying array storing the image data."""
+    inputs: ImageHeader = dataclasses.MISSING
+    """
+    A vector which contains the time and index of each pixel in the set of images.
+    """
+
+    outputs: na.ScalarArray = dataclasses.MISSING
+    """
+    The underlying array storing the image data
+    """
 
     axis_x: str = dataclasses.MISSING
     """
@@ -173,50 +150,8 @@ class SensorData(
     the images.
     """
 
-    time: astropy.time.Time | na.AbstractScalar = dataclasses.MISSING
-    """The time in UTC at the midpoint of the exposure."""
-
-    timedelta: u.Quantity | na.AbstractScalar = dataclasses.MISSING
-    """The measured exposure time of each image."""
-
-    timedelta_requested: u.Quantity | na.AbstractScalar = dataclasses.MISSING
-    """The requested exposure time of each image."""
-
     sensor: AbstractSensor = dataclasses.MISSING
     """A model of the sensor used to capture these images."""
-
-    serial_number: None | str | na.AbstractScalar = None
-    """The serial number of the camera that captured each image."""
-
-    run_mode: None | str | na.AbstractScalar = None
-    """The Run Mode of the camera when each image was captured."""
-
-    status: None | str | na.AbstractScalar = None
-    """The status of the camera while each image was being captured."""
-
-    voltage_fpga_vccint: u.Quantity | na.AbstractScalar = 0
-    """The VCCINT voltage of the FPGA when each image was captured."""
-
-    voltage_fpga_vccaux: u.Quantity | na.AbstractScalar = 0
-    """The VCCAUX voltage of the FPGA when each image was captured."""
-
-    voltage_fpga_vccbram: u.Quantity | na.AbstractScalar = 0
-    """The VCCBRAM voltage of the FPGA when each image was captured."""
-
-    temperature_fpga: u.Quantity | na.AbstractScalar = 0
-    """The temperature of the FPGA when each image was captured."""
-
-    temperature_adc_1: u.Quantity | na.AbstractScalar = 0
-    """Temperature 1 of the ADC when each image was captured."""
-
-    temperature_adc_2: u.Quantity | na.AbstractScalar = 0
-    """Temperature 2 of the ADC when each image was captured."""
-
-    temperature_adc_3: u.Quantity | na.AbstractScalar = 0
-    """Temperature 3 of the ADC when each image was captured."""
-
-    temperature_adc_4: u.Quantity | na.AbstractScalar = 0
-    """Temperature 4 of the ADC when each image was captured."""
 
     @classmethod
     def _calibrate_timedelta(cls, value: int) -> u.Quantity:
@@ -338,23 +273,40 @@ class SensorData(
         temperature_adc_3 = cls._calibrate_temperature_adc_234(temperature_adc_3)
         temperature_adc_4 = cls._calibrate_temperature_adc_234(temperature_adc_4)
 
+        shape = data.shape
+
+        shape_img = {
+            axis_x: shape[axis_x],
+            axis_y: shape[axis_y],
+        }
+
+        pixel = na.indices(shape_img)
+
+        pixel = na.Cartesian2dVectorArray(
+            x=pixel[axis_x],
+            y=pixel[axis_y],
+        )
+
         return cls(
-            data=data,
+            inputs=ImageHeader(
+                pixel=pixel,
+                time=time,
+                timedelta=timedelta,
+                timedelta_requested=timedelta_requested,
+                serial_number=serial_number,
+                run_mode=run_mode,
+                status=status,
+                voltage_fpga_vccint=voltage_fpga_vccint,
+                voltage_fpga_vccaux=voltage_fpga_vccaux,
+                voltage_fpga_vccbram=voltage_fpga_vccbram,
+                temperature_fpga=temperature_fpga,
+                temperature_adc_1=temperature_adc_1,
+                temperature_adc_2=temperature_adc_2,
+                temperature_adc_3=temperature_adc_3,
+                temperature_adc_4=temperature_adc_4,
+            ),
+            outputs=data,
             axis_x=axis_x,
             axis_y=axis_y,
-            time=time,
-            timedelta=timedelta,
-            timedelta_requested=timedelta_requested,
             sensor=sensor,
-            serial_number=serial_number,
-            run_mode=run_mode,
-            status=status,
-            voltage_fpga_vccint=voltage_fpga_vccint,
-            voltage_fpga_vccaux=voltage_fpga_vccaux,
-            voltage_fpga_vccbram=voltage_fpga_vccbram,
-            temperature_fpga=temperature_fpga,
-            temperature_adc_1=temperature_adc_1,
-            temperature_adc_2=temperature_adc_2,
-            temperature_adc_3=temperature_adc_3,
-            temperature_adc_4=temperature_adc_4,
         )
