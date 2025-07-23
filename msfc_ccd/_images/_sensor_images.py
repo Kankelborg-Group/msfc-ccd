@@ -344,7 +344,7 @@ class SensorData(
     def from_taps(
         self,
         taps: msfc_ccd.TapData,
-    ):
+    ) -> Self:
         """
         Return a new copy of this instance where :attr:`outputs` has
         been overwritten by `taps`.
