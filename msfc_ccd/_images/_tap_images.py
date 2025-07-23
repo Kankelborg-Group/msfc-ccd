@@ -72,11 +72,11 @@ class AbstractTapData(
         """
 
         if num is None:
-            num = self.sensor.num_inactive
+            num = self.sensor.num_blank
 
         i = self.outputs.indices[self.axis_x]
-        lower = (self.sensor.num_inactive - num) <= i
-        upper = i < self.sensor.num_inactive
+        lower = (self.sensor.num_blank - num) <= i
+        upper = i < self.sensor.num_blank
 
         return lower & upper
 
