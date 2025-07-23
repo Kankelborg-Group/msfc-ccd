@@ -17,6 +17,18 @@ API Reference
     msfc_ccd
 
 
+Reports
+=======
+
+Jupyter notebook investigations which help to characterize the CCDs and
+justify the decisions made in this package.
+
+.. toctree::
+    :maxdepth: 1
+
+    reports/bias
+
+
 References
 ==========
 

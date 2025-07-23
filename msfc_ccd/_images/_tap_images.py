@@ -1,3 +1,4 @@
+from typing import Self
 import abc
 import dataclasses
 import named_arrays as na
@@ -48,6 +49,97 @@ class AbstractTapData(
             axis_tap_y: shape[axis_tap_y],
         }
         return na.indices(shape_img)
+
+    @property
+    def label(self):
+        tap_x = self.tap["tap_x"].astype(str).astype(object)
+        tap_y = self.tap["tap_y"].astype(str)
+        return "tap (" + tap_x + ", " + tap_y + ")"
+
+    def where_blank(
+        self,
+        num: None | int = None,
+    ):
+        """
+        A boolean array which is :obj:`True` for all the blank columns.
+
+        Parameters
+        ----------
+        num
+            The number of blank columns to use starting from those closest
+            to the active pixels.
+            If :obj:`None` (the default), all the blank pixels are used.
+        """
+
+        if num is None:
+            num = self.sensor.num_inactive
+
+        i = self.outputs.indices[self.axis_x]
+        lower = (self.sensor.num_inactive - num) <= i
+        upper = i < self.sensor.num_inactive
+
+        return lower & upper
+
+    def where_overscan(
+        self,
+        num: None | int = None,
+    ) -> na.ScalarArray:
+        """
+        A boolean array which is :obj:`True` for all the overscan columns.
+
+        Parameters
+        ----------
+        num
+            The number of overscan columns to use starting from those closest
+            to the active pixels.
+            If :obj:`None` (the default), all the overscan pixels are used.
+        """
+
+        if num is None:
+            num = self.sensor.num_overscan
+
+        i = self.outputs.indices[self.axis_x]
+        overscan_start = self.num_x - self.sensor.num_overscan
+        lower = overscan_start <= i
+        upper = i < (overscan_start + num)
+
+        return lower & upper
+
+    def bias(
+        self,
+        num_blank: None | int = 0,
+        num_overscan: None | int = None,
+    ) -> Self:
+        """
+        Compute the bias (or pedastal) for each tap by averaging over a
+        selected number of inactive pixels.
+
+        Parameters
+        ----------
+        num_blank
+            The number of blank columns to use starting from those closest
+            to the active pixels.
+            If :obj:`None`, all the blank pixels are used.
+        num_overscan
+            The number of overscan columns to use starting from those closest
+            to the active pixels.
+            If :obj:`None` (the default), all the overscan pixels are used.
+        """
+
+        where_blank = self.where_blank(num_blank)
+        where_overscan = self.where_overscan(num_overscan)
+
+        where = where_blank | where_overscan
+
+        result = dataclasses.replace(
+            self,
+            outputs=self.outputs.mean(
+                axis=(self.axis_x, self.axis_y),
+                where=where,
+            ),
+        )
+
+        return result
 
 
 @dataclasses.dataclass(eq=False, repr=False)
