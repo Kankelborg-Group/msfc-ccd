@@ -105,4 +105,12 @@ class AbstractTestAbstractSensorData(
 class TestSensorData(
     AbstractTestAbstractSensorData,
 ):
-    pass
+
+    def test_from_taps(
+        self,
+        a: msfc_ccd.SensorData,
+    ):
+        b = a.taps("tx", "ty")
+        c = a.from_taps(b)
+
+        assert np.all(a == c)
