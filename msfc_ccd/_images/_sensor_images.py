@@ -25,13 +25,13 @@ class AbstractSensorData(
     An interface for representing data captured by an entire image sensor.
     """
 
-    def taps(
+    def indices_taps(
         self,
         axis_tap_x: str = "tap_x",
         axis_tap_y: str = "tap_y",
-    ) -> msfc_ccd.TapData:
+    ) -> dict[str, na.AbstractScalarArray]:
         """
-        Split the images into separate images for each tap.
+        The indices corresponding to each tap in the image sensor.
 
         Parameters
         ----------
@@ -70,6 +70,30 @@ class AbstractSensorData(
             axis_x: indices_x,
             axis_y: indices_y,
         }
+
+        return indices
+
+    def taps(
+        self,
+        axis_tap_x: str = "tap_x",
+        axis_tap_y: str = "tap_y",
+    ) -> msfc_ccd.TapData:
+        """
+        Split the images into separate images for each tap.
+
+        Parameters
+        ----------
+        axis_tap_x
+            The name of the logical axis corresponding to the horizontal
+            variation of the tap index.
+        axis_tap_y
+            The name of the logical axis corresponding to the vertical
+            variation of the tap index.
+        """
+        indices = self.indices_taps(
+            axis_tap_x=axis_tap_x,
+            axis_tap_y=axis_tap_y,
+        )
 
         return msfc_ccd.TapData(
             inputs=dataclasses.replace(
@@ -241,7 +265,7 @@ class SensorData(
             if i == 0:
                 data = na.ScalarArray.empty(
                     shape=na.broadcast_shapes(path.shape, data_index.shape),
-                    dtype=int,
+                    dtype=float,
                 )
 
             data[index] = data_index
@@ -315,4 +339,30 @@ class SensorData(
             axis_x=axis_x,
             axis_y=axis_y,
             sensor=sensor,
+        )
+
+    def from_taps(
+        self,
+        taps: msfc_ccd.TapData,
+    ):
+        """
+        Return a new copy of this instance where :attr:`outputs` has
+        been overwritten by `taps`.
+
+        Parameters
+        ----------
+        taps
+            The data from each tap.
+        """
+        indices = self.indices_taps(
+            axis_tap_x=taps.axis_tap_x,
+            axis_tap_y=taps.axis_tap_y,
+        )
+
+        outputs = self.outputs.copy()
+        outputs[indices] = taps.outputs
+
+        return dataclasses.replace(
+            self,
+            outputs=outputs,
         )
