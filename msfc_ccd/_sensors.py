@@ -43,7 +43,6 @@ class AbstractSensor(
         """
 
 
-
 @dataclasses.dataclass(eq=False, repr=False)
 class TeledyneCCD230(
     AbstractSensor,
