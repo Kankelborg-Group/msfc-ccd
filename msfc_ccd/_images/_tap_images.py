@@ -22,7 +22,7 @@ class AbstractTapData(
 
     @property
     @abc.abstractmethod
-    def axis_tap_x(self):
+    def axis_tap_x(self) -> str:
         """
         The name of the logical axis corresponding to the horizontal
         variation of the tap index.
@@ -30,7 +30,7 @@ class AbstractTapData(
 
     @property
     @abc.abstractmethod
-    def axis_tap_y(self):
+    def axis_tap_y(self) -> str:
         """
         The name of the logical axis corresponding to the vertical
         variation of the tap index.
@@ -51,7 +51,7 @@ class AbstractTapData(
         return na.indices(shape_img)
 
     @property
-    def label(self):
+    def label(self) -> na.ScalarArray:
         tap_x = self.tap["tap_x"].astype(str).astype(object)
         tap_y = self.tap["tap_y"].astype(str)
         return "tap (" + tap_x + ", " + tap_y + ")"
@@ -59,7 +59,7 @@ class AbstractTapData(
     def where_blank(
         self,
         num: None | int = None,
-    ):
+    ) -> na.ScalarArray:
         """
         A boolean array which is :obj:`True` for all the blank columns.
 
@@ -111,7 +111,7 @@ class AbstractTapData(
         num_overscan: None | int = None,
     ) -> Self:
         """
-        Compute the bias (or pedastal) for each tap by averaging over a
+        Compute the bias (or pedastal) for each tap by taking the mean value of a
         selected number of inactive pixels.
 
         Parameters
