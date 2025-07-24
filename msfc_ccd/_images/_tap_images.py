@@ -52,6 +52,9 @@ class AbstractTapData(
 
     @property
     def label(self) -> na.ScalarArray:
+        """
+        Human-readable name of the tap used often for plotting.
+        """
         tap_x = self.tap["tap_x"].astype(str).astype(object)
         tap_y = self.tap["tap_y"].astype(str)
         return "tap (" + tap_x + ", " + tap_y + ")"
