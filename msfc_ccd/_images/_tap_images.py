@@ -129,6 +129,12 @@ class AbstractTapData(
             The number of overscan columns to use starting from those closest
             to the active pixels.
             If :obj:`None` (the default), all the overscan pixels are used.
+
+        .. nblinkgallery::
+            :caption: Relevant Reports
+            :name: rst-link-gallery
+
+            ../reports/bias
         """
 
         where_blank = self.where_blank(num_blank)
