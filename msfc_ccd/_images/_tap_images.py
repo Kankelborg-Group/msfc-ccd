@@ -117,7 +117,7 @@ class AbstractTapData(
         Compute the bias (or pedastal) for each tap by taking the mean value of a
         selected number of inactive pixels.
 
-        For more information, see the :ref:`reports/bias.ipynb` report.
+        For more information, see the :ref:`../reports/bias.ipynb` report.
 
         Parameters
         ----------
