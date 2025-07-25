@@ -130,6 +130,7 @@ class AbstractTapData(
             to the active pixels.
             If :obj:`None` (the default), all the overscan pixels are used.
 
+
         .. nblinkgallery::
             :caption: Relevant Reports
             :name: rst-link-gallery
