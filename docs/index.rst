@@ -5,6 +5,8 @@ This library aims to provide a set of simple utilities to determine the gain and
 bias of CCD cameras developed by Marshall Space Flight Center for use in
 spaceflight.
 
+|
+
 
 API Reference
 =============
@@ -15,6 +17,22 @@ API Reference
     :recursive:
 
     msfc_ccd
+
+|
+
+
+Reports
+=======
+
+Jupyter notebook investigations which help to characterize the CCDs and
+justify the decisions made in this package.
+
+.. toctree::
+    :maxdepth: 1
+
+    reports/bias
+
+|
 
 
 References

@@ -16,9 +16,9 @@ class AbstractTestAbstractSensor:
     def test_width_pixel(self, sensor: msfc_ccd.abc.AbstractSensor):
         assert sensor.width_pixel > 0 * u.um
 
-    def test_num_inactive(self, sensor: msfc_ccd.abc.AbstractSensor):
-        assert isinstance(sensor.num_inactive, int)
-        assert sensor.num_inactive > 0
+    def test_num_blank(self, sensor: msfc_ccd.abc.AbstractSensor):
+        assert isinstance(sensor.num_blank, int)
+        assert sensor.num_blank > 0
 
     def test_num_overscan(self, sensor: msfc_ccd.abc.AbstractSensor):
         assert isinstance(sensor.num_overscan, int)

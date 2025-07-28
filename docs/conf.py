@@ -37,6 +37,8 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinxcontrib.bibtex',
     'jupyter_sphinx',
+    'nbsphinx',
+    'sphinx_codeautolink',
 ]
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
 autosummary_imported_members = True
