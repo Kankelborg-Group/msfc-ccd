@@ -114,3 +114,12 @@ class TestSensorData(
         c = a.from_taps(b)
 
         assert np.all(a == c)
+
+    def test_unbiased(
+        self,
+        a: msfc_ccd.SensorData,
+    ):
+        result = a.unbiased
+        assert isinstance(result, msfc_ccd.SensorData)
+        assert result.outputs.mean() < 1
+        assert result.outputs.mean() > 0
