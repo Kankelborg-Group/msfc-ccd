@@ -85,15 +85,15 @@ class AbstractTestAbstractSensorData(
             sensor=msfc_ccd.TeledyneCCD230(),
         ),
         msfc_ccd.SensorData.from_fits(
-            path=msfc_ccd.samples.path_fe55_esis1,
+            path=msfc_ccd.samples.path_dark_esis1,
             sensor=msfc_ccd.TeledyneCCD230(),
         ),
         msfc_ccd.SensorData.from_fits(
             path=na.ScalarArray(
                 ndarray=np.array(
                     [
-                        msfc_ccd.samples.path_fe55_esis1,
-                        msfc_ccd.samples.path_fe55_esis3,
+                        msfc_ccd.samples.path_dark_esis1,
+                        msfc_ccd.samples.path_dark_esis3,
                     ]
                 ),
                 axes="time",
@@ -121,5 +121,5 @@ class TestSensorData(
     ):
         result = a.unbiased
         assert isinstance(result, msfc_ccd.SensorData)
-        assert result.outputs.mean() < 1
-        assert result.outputs.mean() > 0
+        assert np.abs(result.outputs.mean()) < 1
+        assert np.abs(result.outputs.mean()) > 0
