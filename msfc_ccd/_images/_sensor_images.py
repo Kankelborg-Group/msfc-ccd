@@ -366,3 +366,12 @@ class SensorData(
             self,
             outputs=outputs,
         )
+
+    @property
+    def unbiased(self) -> Self:
+        """
+        A new copy of this sequence of images where the bias (or pedestal)
+        has been removed from each tap.
+        """
+        taps = self.taps().unbiased
+        return self.from_taps(taps)

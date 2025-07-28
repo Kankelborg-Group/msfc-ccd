@@ -151,6 +151,14 @@ class AbstractTapData(
 
         return result
 
+    @property
+    def unbiased(self) -> Self:
+        """
+        Compute an unbiased version of this object by subtracting off the result
+        of :attr:`bias`.
+        """
+        return self - self.bias()
+
 
 @dataclasses.dataclass(eq=False, repr=False)
 class TapData(
