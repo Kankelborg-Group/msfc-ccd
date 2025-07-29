@@ -25,54 +25,6 @@ class AbstractSensorData(
     An interface for representing data captured by an entire image sensor.
     """
 
-    def indices_taps(
-        self,
-        axis_tap_x: str = "tap_x",
-        axis_tap_y: str = "tap_y",
-    ) -> dict[str, na.AbstractScalarArray]:
-        """
-        The indices corresponding to each tap in the image sensor.
-
-        Parameters
-        ----------
-        axis_tap_x
-            The name of the logical axis corresponding to the horizontal
-            variation of the tap index.
-        axis_tap_y
-            The name of the logical axis corresponding to the vertical
-            variation of the tap index.
-        """
-        axis_x = self.axis_x
-        axis_y = self.axis_y
-
-        num_x = self.num_x
-        num_y = self.num_y
-
-        num_tap_x = self.sensor.num_tap_x
-        num_tap_y = self.sensor.num_tap_y
-
-        num_x_new = num_x // num_tap_x
-        num_y_new = num_y // num_tap_y
-
-        range_left_x = na.arange(0, num_x_new, axis=axis_x)
-        range_left_y = na.arange(0, num_y_new, axis=axis_y)
-
-        range_right_x = na.arange(num_x - 1, num_x_new - 1, axis=axis_x, step=-1)
-        range_right_y = na.arange(num_y - 1, num_y_new - 1, axis=axis_y, step=-1)
-
-        ranges_x = [range_left_x, range_right_x]
-        ranges_y = [range_left_y, range_right_y]
-
-        indices_x = na.stack(ranges_x, axis=axis_tap_x)
-        indices_y = na.stack(ranges_y, axis=axis_tap_y)
-
-        indices = {
-            axis_x: indices_x,
-            axis_y: indices_y,
-        }
-
-        return indices
-
     def taps(
         self,
         axis_tap_x: str = "tap_x",
