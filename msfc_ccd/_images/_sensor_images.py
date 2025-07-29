@@ -437,7 +437,7 @@ class SensorData(
             self,
             inputs=dataclasses.replace(
                 self.inputs,
-                pixel=na.Cartesian2dVectorArray(x, y)
+                pixel=na.Cartesian2dVectorArray(x, y),
             ),
             outputs=a,
         )
