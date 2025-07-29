@@ -53,7 +53,7 @@ class TestImageHeader:
     def test__getitem__(
         self,
         a: msfc_ccd.ImageHeader,
-        item: dict[str, int | slice] | na.AbstractArray
+        item: dict[str, int | slice] | na.AbstractArray,
     ):
         b = a[item]
         assert isinstance(b, msfc_ccd.ImageHeader)
