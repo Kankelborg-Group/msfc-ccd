@@ -82,11 +82,6 @@ class ImageHeader(
         scalar: na.AbstractScalar,
         like: None | na.AbstractExplicitVectorArray = None,
     ) -> Self:
-
-        result = super().from_scalar(scalar, like=like)
-        if result is not NotImplemented:  # pragma: nocover
-            return result
-
         return cls(
             pixel=scalar,
             time=scalar,
