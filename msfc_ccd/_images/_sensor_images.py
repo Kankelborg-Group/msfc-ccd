@@ -25,54 +25,6 @@ class AbstractSensorData(
     An interface for representing data captured by an entire image sensor.
     """
 
-    def indices_taps(
-        self,
-        axis_tap_x: str = "tap_x",
-        axis_tap_y: str = "tap_y",
-    ) -> dict[str, na.AbstractScalarArray]:
-        """
-        The indices corresponding to each tap in the image sensor.
-
-        Parameters
-        ----------
-        axis_tap_x
-            The name of the logical axis corresponding to the horizontal
-            variation of the tap index.
-        axis_tap_y
-            The name of the logical axis corresponding to the vertical
-            variation of the tap index.
-        """
-        axis_x = self.axis_x
-        axis_y = self.axis_y
-
-        num_x = self.num_x
-        num_y = self.num_y
-
-        num_tap_x = self.sensor.num_tap_x
-        num_tap_y = self.sensor.num_tap_y
-
-        num_x_new = num_x // num_tap_x
-        num_y_new = num_y // num_tap_y
-
-        range_left_x = na.arange(0, num_x_new, axis=axis_x)
-        range_left_y = na.arange(0, num_y_new, axis=axis_y)
-
-        range_right_x = na.arange(num_x - 1, num_x_new - 1, axis=axis_x, step=-1)
-        range_right_y = na.arange(num_y - 1, num_y_new - 1, axis=axis_y, step=-1)
-
-        ranges_x = [range_left_x, range_right_x]
-        ranges_y = [range_left_y, range_right_y]
-
-        indices_x = na.stack(ranges_x, axis=axis_tap_x)
-        indices_y = na.stack(ranges_y, axis=axis_tap_y)
-
-        indices = {
-            axis_x: indices_x,
-            axis_y: indices_y,
-        }
-
-        return indices
-
     def taps(
         self,
         axis_tap_x: str = "tap_x",
@@ -90,17 +42,53 @@ class AbstractSensorData(
             The name of the logical axis corresponding to the vertical
             variation of the tap index.
         """
-        indices = self.indices_taps(
-            axis_tap_x=axis_tap_x,
-            axis_tap_y=axis_tap_y,
-        )
+
+        axis_x = self.axis_x
+        axis_y = self.axis_y
+
+        num_x = self.num_x
+        num_y = self.num_y
+
+        num_tap_x = self.sensor.num_tap_x
+        num_tap_y = self.sensor.num_tap_y
+
+        num_x_new = num_x // num_tap_x
+        num_y_new = num_y // num_tap_y
+
+        slice_left_x = {axis_x: slice(None, num_x_new)}
+        slice_left_y = {axis_y: slice(None, num_y_new)}
+
+        slice_right_x = {axis_x: slice(None, num_x_new - 1, -1)}
+        slice_right_y = {axis_y: slice(None, num_y_new - 1, -1)}
+
+        x = self.inputs.pixel.x
+        y = self.inputs.pixel.y
+        outputs = self.outputs
+
+        x = [x[slice_left_x], x[slice_right_x]]
+        y = [y[slice_left_y], y[slice_right_y]]
+
+        x = na.stack(x, axis=axis_tap_x)
+        y = na.stack(y, axis=axis_tap_y)
+
+        outputs_00 = outputs[slice_left_x][slice_left_y]
+        outputs_01 = outputs[slice_left_x][slice_right_y]
+        outputs_10 = outputs[slice_right_x][slice_left_y]
+        outputs_11 = outputs[slice_right_x][slice_right_y]
+
+        outputs = [
+            na.stack([outputs_00, outputs_10], axis=axis_tap_x),
+            na.stack([outputs_01, outputs_11], axis=axis_tap_x),
+        ]
+
+        outputs = na.stack(outputs, axis=axis_tap_y)
 
         return msfc_ccd.TapData(
             inputs=dataclasses.replace(
                 self.inputs,
-                pixel=self.inputs.pixel[indices],
+                pixel=na.Cartesian2dVectorArray(x, y),
             ),
-            outputs=self.outputs[indices],
+            outputs=outputs,
             axis_x=self.axis_x,
             axis_y=self.axis_y,
             axis_tap_x=axis_tap_x,
@@ -354,17 +342,56 @@ class SensorData(
         taps
             The data from each tap.
         """
-        indices = self.indices_taps(
-            axis_tap_x=taps.axis_tap_x,
-            axis_tap_y=taps.axis_tap_y,
-        )
 
-        outputs = self.outputs.copy()
-        outputs[indices] = taps.outputs
+        axis_x = taps.axis_x
+        axis_y = taps.axis_y
+
+        axis_tap_x = taps.axis_tap_x
+        axis_tap_y = taps.axis_tap_y
+
+        x = taps.inputs.pixel.x
+        y = taps.inputs.pixel.y
+
+        x_left = x[{axis_tap_x: 0}]
+        x_right = x[{axis_tap_x: 1}]
+
+        y_left = y[{axis_tap_y: 0}]
+        y_right = y[{axis_tap_y: 1}]
+
+        reverse_x = {axis_x: slice(None, None, -1)}
+        reverse_y = {axis_y: slice(None, None, -1)}
+
+        x_right = x_right[reverse_x]
+        y_right = y_right[reverse_y]
+
+        x = na.concatenate([x_left, x_right], axis=axis_x)
+        y = na.concatenate([y_left, y_right], axis=axis_y)
+
+        a = taps.outputs
+        a_00 = a[{axis_tap_x: 0, axis_tap_y: 0}]
+        a_01 = a[{axis_tap_x: 0, axis_tap_y: 1}]
+        a_10 = a[{axis_tap_x: 1, axis_tap_y: 0}]
+        a_11 = a[{axis_tap_x: 1, axis_tap_y: 1}]
+
+        a_01 = a_01[reverse_y]
+        a_10 = a_10[reverse_x]
+        a_11 = a_11[reverse_x][reverse_y]
+
+        a = na.concatenate(
+            arrays=[
+                na.concatenate([a_00, a_10], axis=axis_x),
+                na.concatenate([a_01, a_11], axis=axis_x),
+            ],
+            axis=axis_y,
+        )
 
         return dataclasses.replace(
             self,
-            outputs=outputs,
+            inputs=dataclasses.replace(
+                self.inputs,
+                pixel=na.Cartesian2dVectorArray(x, y),
+            ),
+            outputs=a,
         )
 
     @property
@@ -374,4 +401,13 @@ class SensorData(
         has been removed from each tap.
         """
         taps = self.taps().unbiased
+        return self.from_taps(taps)
+
+    @property
+    def active(self) -> Self:
+        """
+        Create a new instance of this class with the blank and overscan pixels
+        removed.
+        """
+        taps = self.taps().active
         return self.from_taps(taps)
