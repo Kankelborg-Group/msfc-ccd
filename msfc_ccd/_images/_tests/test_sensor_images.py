@@ -1,7 +1,5 @@
 import pytest
 import numpy as np
-import astropy.units as u
-import astropy.time
 import named_arrays as na
 import msfc_ccd
 from . import test_images
