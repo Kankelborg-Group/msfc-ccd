@@ -159,6 +159,27 @@ class AbstractTapData(
         """
         return self - self.bias()
 
+    @property
+    def active(self) -> Self:
+        """
+        Create a new instance of this class with the blank and overscan pixels
+        removed.
+        """
+        slice_active = slice(self.sensor.num_blank, -self.sensor.num_overscan)
+        slice_active = {self.axis_x: slice_active}
+
+        return dataclasses.replace(
+            self,
+            inputs=dataclasses.replace(
+                self.inputs,
+                pixel=dataclasses.replace(
+                    self.inputs.pixel,
+                    x=self.inputs.pixel.x[slice_active],
+                ),
+            ),
+            outputs=self.outputs[slice_active],
+        )
+
 
 @dataclasses.dataclass(eq=False, repr=False)
 class TapData(

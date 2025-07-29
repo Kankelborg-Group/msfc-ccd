@@ -49,6 +49,13 @@ class AbstractTestAbstractTapImage(
         assert na.unit(result.outputs) == na.unit(a.outputs)
         assert np.abs(result.outputs.mean()) < 1
 
+    def test_active(self, a: msfc_ccd.abc.AbstractTapData):
+        num_nap = a.sensor.num_blank + a.sensor.num_overscan
+        result = a.active
+        assert isinstance(result, msfc_ccd.TapData)
+        assert result.shape[a.axis_x] == a.shape[a.axis_x] - num_nap
+        assert result.shape[a.axis_y] == a.shape[a.axis_y]
+
 
 @pytest.mark.parametrize(
     argnames="a",
