@@ -81,5 +81,21 @@ class ImageHeader(
         cls: Type[Self],
         scalar: na.AbstractScalar,
         like: None | na.AbstractExplicitVectorArray = None,
-    ) -> Self:  # pragma: nocover
-        raise NotImplementedError
+    ) -> Self:
+        return cls(
+            pixel=scalar,
+            time=scalar,
+            timedelta=scalar,
+            timedelta_requested=scalar,
+            serial_number=scalar,
+            run_mode=scalar,
+            status=scalar,
+            voltage_fpga_vccint=scalar,
+            voltage_fpga_vccaux=scalar,
+            voltage_fpga_vccbram=scalar,
+            temperature_fpga=scalar,
+            temperature_adc_1=scalar,
+            temperature_adc_2=scalar,
+            temperature_adc_3=scalar,
+            temperature_adc_4=scalar,
+        )

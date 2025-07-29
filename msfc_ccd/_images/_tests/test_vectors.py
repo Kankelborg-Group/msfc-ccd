@@ -44,6 +44,21 @@ import msfc_ccd
 )
 class TestImageHeader:
 
+    @pytest.mark.parametrize(
+        argnames="item",
+        argvalues=[
+            dict(t=0),
+        ],
+    )
+    def test__getitem__(
+        self,
+        a: msfc_ccd.ImageHeader,
+        item: dict[str, int | slice] | na.AbstractArray,
+    ):
+        b = a[item]
+        assert isinstance(b, msfc_ccd.ImageHeader)
+        assert np.all(a.time[item] == b.time)
+
     def test_time(self, a: msfc_ccd.abc.AbstractImageData):
         result = a.time
         if not isinstance(result, astropy.time.Time):
