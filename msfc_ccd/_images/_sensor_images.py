@@ -305,6 +305,11 @@ class SensorData(
         t.format = "isot"
         time.ndarray = t
 
+        for axis in serial_number.shape:
+            sn0 = serial_number[{axis: 0}]
+            if np.all(sn0 == serial_number):
+                serial_number = sn0
+
         return cls(
             inputs=ImageHeader(
                 pixel=pixel,
