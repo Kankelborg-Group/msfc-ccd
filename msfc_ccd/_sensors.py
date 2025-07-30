@@ -2,7 +2,6 @@ from typing import ClassVar
 import abc
 import dataclasses
 import astropy.units as u
-import optika
 
 __all__ = [
     "TeledyneCCD230",
@@ -11,7 +10,7 @@ __all__ = [
 
 @dataclasses.dataclass(eq=False, repr=False)
 class AbstractSensor(
-    optika.mixins.Printable,
+    abc.ABC,
 ):
     """
     An interface for an imaging sensor or an ensemble of imaging sensors.
