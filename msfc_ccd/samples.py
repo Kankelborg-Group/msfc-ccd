@@ -1,6 +1,4 @@
-"""
-Sample FITS files gathered from the MSFC cameras.
-"""
+"""Sample FITS files gathered from the MSFC cameras."""
 
 import pathlib
 
