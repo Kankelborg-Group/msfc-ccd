@@ -1,6 +1,4 @@
-"""
-Abstract base classes for this subpackage
-"""
+"""Abstract base classes for this subpackage."""
 
 __all__ = [
     "AbstractImageData",

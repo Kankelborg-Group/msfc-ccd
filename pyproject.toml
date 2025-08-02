@@ -45,3 +45,18 @@ Documentation = "https://msfc-ccd.readthedocs.io/en/latest"
 packages = ["msfc_ccd"]
 
 [tool.setuptools_scm]
+
+[tool.ruff.lint]
+preview = true
+select = [
+    "E",
+    "F",
+    "D",
+    "DOC",
+]
+ignore = [
+    "DOC201",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"

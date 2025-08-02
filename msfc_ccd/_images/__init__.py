@@ -1,6 +1,4 @@
-"""
-A package for representing data gathered from imaging sensors
-"""
+"""A package for representing data captured by the MSFC cameras."""
 
 __all__ = [
     "ImageHeader",

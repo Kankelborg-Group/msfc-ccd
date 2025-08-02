@@ -1,3 +1,4 @@
+from typing_extensions import Self
 import abc
 import dataclasses
 import named_arrays as na
@@ -24,36 +25,34 @@ class AbstractImageData(
     @property
     @abc.abstractmethod
     def axis_x(self) -> str:
-        """
-        The name of the logical axis representing the horizontal dimension of
-        the images.
-        """
+        """The name of the horizontal axis."""
 
     @property
     @abc.abstractmethod
     def axis_y(self) -> str:
-        """
-        The name of the logical axis representing the vertical dimension of
-        the images.
-        """
+        """The name of vertical axis."""
 
     @property
     def num_x(self) -> int:
-        """
-        The number of pixels along the x-axis.
-        """
+        """The number of pixels along the horizontal axis."""
         return self.outputs.shape[self.axis_x]
 
     @property
     def num_y(self) -> int:
-        """
-        The number of pixels along the y-axis.
-        """
+        """The number of pixels along the vertical axis."""
         return self.outputs.shape[self.axis_y]
 
     @property
     @abc.abstractmethod
     def sensor(self) -> AbstractSensor:
-        """
-        A model of the sensor used to capture these images.
-        """
+        """A model of the sensor used to capture these images."""
+
+    @property
+    @abc.abstractmethod
+    def unbiased(self) -> Self:
+        """A new copy of these images where the bias has been removed."""
+
+    @property
+    @abc.abstractmethod
+    def active(self) -> Self:
+        """A new copy of these images without the bias and overscan columns."""

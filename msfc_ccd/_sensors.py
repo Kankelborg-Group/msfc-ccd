@@ -12,9 +12,7 @@ __all__ = [
 class AbstractSensor(
     abc.ABC,
 ):
-    """
-    An interface for an imaging sensor or an ensemble of imaging sensors.
-    """
+    """An interface for an imaging sensor or an ensemble of imaging sensors."""
 
     num_tap_x: ClassVar[int] = 2
     """The number of taps along the long axis of the CCD sensor."""
@@ -30,35 +28,25 @@ class AbstractSensor(
     @property
     @abc.abstractmethod
     def num_blank(self) -> int:
-        """
-        The number of blank columns at the start of each row of the tap image.
-        """
+        """The number of blank columns at the start of each row."""
 
     @property
     @abc.abstractmethod
     def num_overscan(self):
-        """
-        The number of overscan columns at the end of each row of the tap image.
-        """
+        """The number of overscan columns at the end of each row."""
 
 
 @dataclasses.dataclass(eq=False, repr=False)
 class TeledyneCCD230(
     AbstractSensor,
 ):
-    """
-    The standard sensor used by the MSFC cameras.
-    """
+    """The standard sensor used by the MSFC cameras."""
 
     width_pixel: u.Quantity = 15 * u.um
     """The physical size of a single pixel on the imaging sensor."""
 
     num_blank: int = 50
-    """
-    The number of blank columns at the start of each row of the tap image.
-    """
+    """The number of blank columns at the start of each row."""
 
     num_overscan: int = 2
-    """
-    The number of overscan columns at the end of each row of the tap image.
-    """
+    """The number of overscan columns at the end of each row."""
