@@ -1,6 +1,4 @@
-"""
-Utilities for working with FITS files.
-"""
+"""Utilities for working with FITS files."""
 
 import pathlib
 import named_arrays as na
@@ -19,8 +17,7 @@ def open(
     axis_y: str = "detector_y",
 ) -> msfc_ccd.SensorData:
     """
-    Load an image from a given FITS file path, or an array of images from
-    a given array of FITS file paths.
+    Load the given FITS images into memory.
 
     This is a convenience function for :meth:`msfc_ccd.SensorData.from_fits`.
 
@@ -42,7 +39,6 @@ def open(
 
     Examples
     --------
-
     Load and display a single FITS file.
 
     .. jupyter-execute::
@@ -120,7 +116,6 @@ def open(
             ax=axs,
         );
     """
-
     if sensor is None:
         sensor = msfc_ccd.TeledyneCCD230()
 

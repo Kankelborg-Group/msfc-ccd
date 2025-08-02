@@ -21,9 +21,7 @@ __all__ = [
 class AbstractSensorData(
     AbstractImageData,
 ):
-    """
-    An interface for representing data captured by an entire image sensor.
-    """
+    """An interface for representing data captured by an entire image sensor."""
 
     def taps(
         self,
@@ -42,7 +40,6 @@ class AbstractSensorData(
             The name of the logical axis corresponding to the vertical
             variation of the tap index.
         """
-
         axis_x = self.axis_x
         axis_y = self.axis_y
 
@@ -102,12 +99,10 @@ class SensorData(
     AbstractSensorData,
 ):
     """
-    A class designed to represent a sequence of images captured by an
-    MSFC camera.
+    A single image or a sequence of images captured by the MSFC camera.
 
     Examples
     --------
-
     Load a sample image and display it.
 
     .. jupyter-execute::
@@ -141,26 +136,16 @@ class SensorData(
     """
 
     inputs: ImageHeader = dataclasses.MISSING
-    """
-    A vector which contains the time and index of each pixel in the set of images.
-    """
+    """A vector which contains the FITS header for each image."""
 
     outputs: na.ScalarArray = dataclasses.MISSING
-    """
-    The underlying array storing the image data
-    """
+    """The underlying array storing the image data."""
 
     axis_x: str = dataclasses.MISSING
-    """
-    The name of the logical axis representing the horizontal dimension of
-    the images.
-    """
+    """The name of the horizontal axis."""
 
     axis_y: str = dataclasses.MISSING
-    """
-    The name of the logical axis representing the vertical dimension of
-    the images.
-    """
+    """The name of the vertical axis."""
 
     sensor: AbstractSensor = dataclasses.MISSING
     """A model of the sensor used to capture these images."""
@@ -205,8 +190,7 @@ class SensorData(
         axis_y: str = "detector_y",
     ) -> Self:
         """
-        Load an image or an array of images from a FITS file or an array of
-        FITS files.
+        Load an image or an array of images from a FITS file or an array of files.
 
         Parameters
         ----------
@@ -222,7 +206,6 @@ class SensorData(
             The name of the logical axis representing the vertical dimension of
             the images.
         """
-
         path = na.as_named_array(path)
 
         time = na.ScalarArray.zeros(na.shape(path))
@@ -339,15 +322,13 @@ class SensorData(
         taps: msfc_ccd.TapData,
     ) -> Self:
         """
-        Return a new copy of this instance where :attr:`outputs` has
-        been overwritten by `taps`.
+        Create a new copy of this object by concatenating the data from `taps`.
 
         Parameters
         ----------
         taps
             The data from each tap.
         """
-
         axis_x = taps.axis_x
         axis_y = taps.axis_y
 
@@ -401,18 +382,10 @@ class SensorData(
 
     @property
     def unbiased(self) -> Self:
-        """
-        A new copy of this sequence of images where the bias (or pedestal)
-        has been removed from each tap.
-        """
         taps = self.taps().unbiased
         return self.from_taps(taps)
 
     @property
     def active(self) -> Self:
-        """
-        Create a new instance of this class with the blank and overscan pixels
-        removed.
-        """
         taps = self.taps().active
         return self.from_taps(taps)

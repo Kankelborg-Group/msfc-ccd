@@ -1,6 +1,4 @@
-"""
-Abstract base classes used throughout this library.
-"""
+"""Abstract base classes used throughout this library."""
 
 __all__ = [
     "AbstractSensor",

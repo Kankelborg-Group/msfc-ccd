@@ -15,32 +15,21 @@ __all__ = [
 class AbstractTapData(
     AbstractImageData,
 ):
-    """
-    An interface for representing data gathered by a single tap on an image
-    sensor.
-    """
+    """An interface for representing data gathered by a single tap."""
 
     @property
     @abc.abstractmethod
     def axis_tap_x(self) -> str:
-        """
-        The name of the logical axis corresponding to the horizontal
-        variation of the tap index.
-        """
+        """The name of the horizontal tap axis."""
 
     @property
     @abc.abstractmethod
     def axis_tap_y(self) -> str:
-        """
-        The name of the logical axis corresponding to the vertical
-        variation of the tap index.
-        """
+        """The name of the vertical tap axis."""
 
     @property
     def tap(self) -> dict[str, na.AbstractScalarArray]:
-        """
-        The 2-dimensional index of the tap corresponding to each image.
-        """
+        """The 2-dimensional index of the tap corresponding to each image."""
         axis_tap_x = self.axis_tap_x
         axis_tap_y = self.axis_tap_y
         shape = self.outputs.shape
@@ -52,9 +41,7 @@ class AbstractTapData(
 
     @property
     def label(self) -> na.ScalarArray:
-        """
-        Human-readable name of the tap used often for plotting.
-        """
+        """Human-readable name of the tap used often for plotting."""
         tap_x = self.tap["tap_x"].astype(str).astype(object)
         tap_y = self.tap["tap_y"].astype(str)
         return "tap (" + tap_x + ", " + tap_y + ")"
@@ -64,7 +51,7 @@ class AbstractTapData(
         num: None | int = None,
     ) -> na.ScalarArray:
         """
-        A boolean array which is :obj:`True` for all the blank columns.
+        Create a boolean array which is :obj:`True` for all the blank columns.
 
         Parameters
         ----------
@@ -73,7 +60,6 @@ class AbstractTapData(
             to the active pixels.
             If :obj:`None` (the default), all the blank pixels are used.
         """
-
         if num is None:
             num = self.sensor.num_blank
 
@@ -88,7 +74,7 @@ class AbstractTapData(
         num: None | int = None,
     ) -> na.ScalarArray:
         """
-        A boolean array which is :obj:`True` for all the overscan columns.
+        Create a boolean array which is :obj:`True` for all the overscan columns.
 
         Parameters
         ----------
@@ -97,7 +83,6 @@ class AbstractTapData(
             to the active pixels.
             If :obj:`None` (the default), all the overscan pixels are used.
         """
-
         if num is None:
             num = self.sensor.num_overscan
 
@@ -114,8 +99,10 @@ class AbstractTapData(
         num_overscan: None | int = None,
     ) -> Self:
         """
-        Compute the bias (or pedastal) for each tap by taking the mean value of a
-        selected number of inactive pixels.
+        Compute the bias (or pedastal) for each tap.
+
+        Select a number of blank pixels and a number of overscan pixels and
+        take the mean to compute the bias.
 
         Parameters
         ----------
@@ -135,7 +122,6 @@ class AbstractTapData(
 
             ../reports/bias
         """
-
         where_blank = self.where_blank(num_blank)
         where_overscan = self.where_overscan(num_overscan)
 
@@ -153,18 +139,10 @@ class AbstractTapData(
 
     @property
     def unbiased(self) -> Self:
-        """
-        Compute an unbiased version of this object by subtracting off the result
-        of :attr:`bias`.
-        """
         return self - self.bias()
 
     @property
     def active(self) -> Self:
-        """
-        Create a new instance of this class with the blank and overscan pixels
-        removed.
-        """
         slice_active = slice(self.sensor.num_blank, -self.sensor.num_overscan)
         slice_active = {self.axis_x: slice_active}
 
@@ -186,12 +164,10 @@ class TapData(
     AbstractTapData,
 ):
     """
-    A class designed to represent a sequence of images from each tap of an
-    MSFC camera.
+    An image or a sequence of images captured from each tap of the sensor.
 
     Examples
     --------
-
     Load a sample image and split it into the four tap images.
 
     .. jupyter-execute::
@@ -237,38 +213,22 @@ class TapData(
     """
 
     inputs: ImageHeader = dataclasses.MISSING
-    """
-    A vector which contains the time and index of each pixel in the set of images.
-    """
+    """A vector which contains the FITS header for each image."""
 
     outputs: na.ScalarArray = dataclasses.MISSING
-    """
-    The underlying array storing the image data
-    """
+    """The underlying array storing the image data."""
 
     axis_x: str = dataclasses.MISSING
-    """
-    The name of the logical axis representing the horizontal dimension of
-    the images.
-    """
+    """The name of the horizontal axis."""
 
     axis_y: str = dataclasses.MISSING
-    """
-    The name of the logical axis representing the vertical dimension of
-    the images.
-    """
+    """The name of the vertical axis."""
 
     axis_tap_x: str = dataclasses.MISSING
-    """
-    The name of the logical axis corresponding to the horizontal
-    variation of the tap index.
-    """
+    """The name of the horizontal tap axis."""
 
     axis_tap_y: str = dataclasses.MISSING
-    """
-    The name of the logical axis corresponding to the vertical
-    variation of the tap index.
-    """
+    """The name of the vertical tap axis."""
 
     sensor: AbstractSensor = dataclasses.MISSING
     """A model of the sensor used to capture these images."""
