@@ -2,7 +2,7 @@ from typing_extensions import Self
 import abc
 import dataclasses
 import named_arrays as na
-from .._sensors import AbstractSensor
+from .._cameras import AbstractCamera
 from ._vectors import ImageHeader
 
 __all__ = []
@@ -44,8 +44,8 @@ class AbstractImageData(
 
     @property
     @abc.abstractmethod
-    def sensor(self) -> AbstractSensor:
-        """A model of the sensor used to capture these images."""
+    def camera(self) -> AbstractCamera:
+        """A model of the camera used to capture these images."""
 
     @property
     @abc.abstractmethod

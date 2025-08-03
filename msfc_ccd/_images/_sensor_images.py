@@ -8,7 +8,7 @@ import astropy.time
 import astropy.io.fits
 import named_arrays as na
 import msfc_ccd
-from .._sensors import AbstractSensor
+from .._cameras import AbstractCamera
 from ._vectors import ImageHeader
 from ._images import AbstractImageData
 
@@ -46,8 +46,8 @@ class AbstractSensorData(
         num_x = self.num_x
         num_y = self.num_y
 
-        num_tap_x = self.sensor.num_tap_x
-        num_tap_y = self.sensor.num_tap_y
+        num_tap_x = self.camera.sensor.num_tap_x
+        num_tap_y = self.camera.sensor.num_tap_y
 
         num_x_new = num_x // num_tap_x
         num_y_new = num_y // num_tap_y
@@ -90,7 +90,7 @@ class AbstractSensorData(
             axis_y=self.axis_y,
             axis_tap_x=axis_tap_x,
             axis_tap_y=axis_tap_y,
-            sensor=self.sensor,
+            camera=self.camera,
         )
 
 
@@ -147,45 +147,14 @@ class SensorData(
     axis_y: str = dataclasses.MISSING
     """The name of the vertical axis."""
 
-    sensor: AbstractSensor = dataclasses.MISSING
+    camera: AbstractCamera = dataclasses.MISSING
     """A model of the sensor used to capture these images."""
-
-    @classmethod
-    def _calibrate_timedelta(cls, value: int) -> u.Quantity:
-        return value * 0.000000025 * u.s
-
-    @classmethod
-    def _calibrate_voltage_fpga(cls, value: int) -> u.Quantity:
-        return value * 3 / 4096 * u.V
-
-    @classmethod
-    def _calibrate_temperature_fpga(cls, value: int) -> u.Quantity:
-        result = value * 503.975 / 4096 * u.K
-        result = result.to(u.deg_C, equivalencies=u.temperature())
-        return result
-
-    @classmethod
-    def _calibrate_temperature_adc_1(cls, value: int) -> u.Quantity:
-        r = (9.814453125 * value) / (1 - (value / 4096.0))
-        result = 3455.0 / np.log(r / 0.0927557) * u.K
-        result = result.to(u.deg_C, equivalencies=u.temperature())
-        return result
-
-    @classmethod
-    def _calibrate_temperature_adc_234(cls, value: int) -> u.Quantity:
-        r = (9.814453125 * value) / (1 - (value / 4096.0))
-        a = 0.0011275
-        b = 0.00023441
-        c = 0.000000086482
-        result = 1 / (a + (b * np.log(r)) + (c * np.log(r)) ** 3) * u.K
-        result = result.to(u.deg_C, equivalencies=u.temperature())
-        return result
 
     @classmethod
     def from_fits(
         cls,
         path: str | pathlib.Path | na.AbstractScalarArray,
-        sensor: AbstractSensor,
+        camera: AbstractCamera,
         axis_x: str = "detector_x",
         axis_y: str = "detector_y",
     ) -> Self:
@@ -197,8 +166,8 @@ class SensorData(
         path
             Either a single path or an array of paths pointing to the FITS files
             to load.
-        sensor
-            A model of the sensor used to capture these images.
+        camera
+            A model of the camera used to capture these images.
         axis_x
             The name of the logical axis representing the horizontal dimension of
             the images.
@@ -257,15 +226,15 @@ class SensorData(
             temperature_adc_3[index] = header["ADCTEMP3"]
             temperature_adc_4[index] = header["ADCTEMP4"]
 
-        timedelta = cls._calibrate_timedelta(timedelta)
-        voltage_fpga_vccint = cls._calibrate_voltage_fpga(voltage_fpga_vccint)
-        voltage_fpga_vccaux = cls._calibrate_voltage_fpga(voltage_fpga_vccaux)
-        voltage_fpga_vccbram = cls._calibrate_voltage_fpga(voltage_fpga_vccbram)
-        temperature_fpga = cls._calibrate_temperature_fpga(temperature_fpga)
-        temperature_adc_1 = cls._calibrate_temperature_adc_1(temperature_adc_1)
-        temperature_adc_2 = cls._calibrate_temperature_adc_234(temperature_adc_2)
-        temperature_adc_3 = cls._calibrate_temperature_adc_234(temperature_adc_3)
-        temperature_adc_4 = cls._calibrate_temperature_adc_234(temperature_adc_4)
+        timedelta = camera.calibrate_timedelta_exposure(timedelta)
+        voltage_fpga_vccint = camera.calibrate_voltage_fpga(voltage_fpga_vccint)
+        voltage_fpga_vccaux = camera.calibrate_voltage_fpga(voltage_fpga_vccaux)
+        voltage_fpga_vccbram = camera.calibrate_voltage_fpga(voltage_fpga_vccbram)
+        temperature_fpga = camera.calibrate_temperature_fpga(temperature_fpga)
+        temperature_adc_1 = camera.calibrate_temperature_adc_1(temperature_adc_1)
+        temperature_adc_2 = camera.calibrate_temperature_adc_234(temperature_adc_2)
+        temperature_adc_3 = camera.calibrate_temperature_adc_234(temperature_adc_3)
+        temperature_adc_4 = camera.calibrate_temperature_adc_234(temperature_adc_4)
 
         shape = data.shape
 
@@ -314,7 +283,7 @@ class SensorData(
             outputs=data,
             axis_x=axis_x,
             axis_y=axis_y,
-            sensor=sensor,
+            camera=camera,
         )
 
     def from_taps(

@@ -24,7 +24,7 @@ class AbstractTestAbstractImageData(
         result = a.num_y
         assert isinstance(result, int)
 
-    def test_sensor(self, a: msfc_ccd.abc.AbstractImageData):
-        result = a.sensor
+    def test_camera(self, a: msfc_ccd.abc.AbstractImageData):
+        result = a.camera
         if result is not None:
-            assert isinstance(result, msfc_ccd.abc.AbstractSensor)
+            assert isinstance(result, msfc_ccd.abc.AbstractCamera)

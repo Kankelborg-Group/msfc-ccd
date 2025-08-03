@@ -31,11 +31,11 @@ class AbstractTestAbstractTapImage(
 
     def test_where_blank(self, a: msfc_ccd.abc.AbstractTapData):
         result = a.where_blank()
-        assert result.sum() == a.sensor.num_blank
+        assert result.sum() == a.camera.sensor.num_blank
 
     def test_where_overscan(self, a: msfc_ccd.abc.AbstractTapData):
         result = a.where_overscan()
-        assert result.sum() == a.sensor.num_overscan
+        assert result.sum() == a.camera.sensor.num_overscan
 
     def test_bias(self, a: msfc_ccd.abc.AbstractTapData):
         result = a.bias()
@@ -50,7 +50,8 @@ class AbstractTestAbstractTapImage(
         assert np.abs(result.outputs.mean()) < 1
 
     def test_active(self, a: msfc_ccd.abc.AbstractTapData):
-        num_nap = a.sensor.num_blank + a.sensor.num_overscan
+        sensor = a.camera.sensor
+        num_nap = sensor.num_blank + sensor.num_overscan
         result = a.active
         assert isinstance(result, msfc_ccd.TapData)
         assert result.shape[a.axis_x] == a.shape[a.axis_x] - num_nap
