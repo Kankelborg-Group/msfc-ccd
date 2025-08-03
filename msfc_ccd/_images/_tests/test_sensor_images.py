@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+import astropy.units as u
 import named_arrays as na
 import msfc_ccd
 from . import test_images
@@ -18,7 +19,7 @@ class AbstractTestAbstractSensorData(
     argvalues=[
         msfc_ccd.SensorData.from_fits(
             path=msfc_ccd.samples.path_dark_esis1,
-            sensor=msfc_ccd.TeledyneCCD230(),
+            camera=msfc_ccd.Camera(1 * u.electron / u.DN),
         ),
         msfc_ccd.SensorData.from_fits(
             path=na.ScalarArray(
@@ -30,7 +31,7 @@ class AbstractTestAbstractSensorData(
                 ),
                 axes="channel",
             ),
-            sensor=msfc_ccd.TeledyneCCD230(),
+            camera=msfc_ccd.Camera(1 * u.electron / u.DN),
         ),
         msfc_ccd.SensorData.from_fits(
             path=na.ScalarArray(
@@ -42,7 +43,7 @@ class AbstractTestAbstractSensorData(
                 ),
                 axes="time",
             ),
-            sensor=msfc_ccd.TeledyneCCD230(),
+            camera=msfc_ccd.Camera(1 * u.electron / u.DN),
         ),
     ],
 )
@@ -74,7 +75,8 @@ class TestSensorData(
         self,
         a: msfc_ccd.SensorData,
     ):
-        num_nap = 2 * (a.sensor.num_blank + a.sensor.num_overscan)
+        sensor = a.camera.sensor
+        num_nap = 2 * (sensor.num_blank + sensor.num_overscan)
         result = a.active
         assert isinstance(result, msfc_ccd.SensorData)
         assert result.shape[a.axis_x] == a.shape[a.axis_x] - num_nap

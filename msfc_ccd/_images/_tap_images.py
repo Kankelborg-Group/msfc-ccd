@@ -2,7 +2,7 @@ from typing_extensions import Self
 import abc
 import dataclasses
 import named_arrays as na
-from .._sensors import AbstractSensor
+from .._cameras import AbstractCamera
 from ._vectors import ImageHeader
 from ._images import AbstractImageData
 
@@ -61,11 +61,11 @@ class AbstractTapData(
             If :obj:`None` (the default), all the blank pixels are used.
         """
         if num is None:
-            num = self.sensor.num_blank
+            num = self.camera.sensor.num_blank
 
         i = self.outputs.indices[self.axis_x]
-        lower = (self.sensor.num_blank - num) <= i
-        upper = i < self.sensor.num_blank
+        lower = (self.camera.sensor.num_blank - num) <= i
+        upper = i < self.camera.sensor.num_blank
 
         return lower & upper
 
@@ -84,10 +84,10 @@ class AbstractTapData(
             If :obj:`None` (the default), all the overscan pixels are used.
         """
         if num is None:
-            num = self.sensor.num_overscan
+            num = self.camera.sensor.num_overscan
 
         i = self.outputs.indices[self.axis_x]
-        overscan_start = self.num_x - self.sensor.num_overscan
+        overscan_start = self.num_x - self.camera.sensor.num_overscan
         lower = overscan_start <= i
         upper = i < (overscan_start + num)
 
@@ -143,7 +143,8 @@ class AbstractTapData(
 
     @property
     def active(self) -> Self:
-        slice_active = slice(self.sensor.num_blank, -self.sensor.num_overscan)
+        sensor = self.camera.sensor
+        slice_active = slice(sensor.num_blank, -sensor.num_overscan)
         slice_active = {self.axis_x: slice_active}
 
         return dataclasses.replace(
@@ -230,5 +231,5 @@ class TapData(
     axis_tap_y: str = dataclasses.MISSING
     """The name of the vertical tap axis."""
 
-    sensor: AbstractSensor = dataclasses.MISSING
-    """A model of the sensor used to capture these images."""
+    camera: AbstractCamera = dataclasses.MISSING
+    """A model of the camera used to capture these images."""
