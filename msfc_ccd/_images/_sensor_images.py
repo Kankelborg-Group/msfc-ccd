@@ -118,7 +118,7 @@ class SensorData(
         # Load the sample image
         image = msfc_ccd.SensorData.from_fits(
             path=msfc_ccd.samples.path_fe55_esis1,
-            sensor=msfc_ccd.TeledyneCCD230(),
+            camera=msfc_ccd.Camera(),
             axis_x=axis_x,
             axis_y=axis_y,
         )
