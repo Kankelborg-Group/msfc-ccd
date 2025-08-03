@@ -73,7 +73,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/Kankelborg-Group/msfc-ccd",
+            "url": "https://github.com/sun-data/msfc-ccd",
             "icon": "fa-brands fa-github",
             "type": "fontawesome",
         },
