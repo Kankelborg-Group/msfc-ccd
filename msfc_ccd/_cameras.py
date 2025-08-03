@@ -107,7 +107,7 @@ class Camera(
     """
     A model of the cameras developed by the MSFC sounding rocket team.
 
-    This is a composition of a :class:`msfc.abc.AbstractSensor` object
+    This is a composition of a :class:`msfc_ccd.abc.AbstractSensor` object
     and various parameters such as the exposure time etc.
     Also provided are some conversion equations between counts and
     physical units for various parameters such as the FPGA temperature, etc.
