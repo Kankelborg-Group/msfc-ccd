@@ -22,6 +22,21 @@ class AbstractSensor(
 
     @property
     @abc.abstractmethod
+    def manufacturer(self) -> str:
+        """The company which produced the sensor."""
+
+    @property
+    @abc.abstractmethod
+    def family(self) -> str:
+        """The model number or product family of this sensor."""
+
+    @property
+    @abc.abstractmethod
+    def serial_number(self) -> None | str:
+        """A unique number which identifies this sensor."""
+
+    @property
+    @abc.abstractmethod
     def width_pixel(self) -> u.Quantity:
         """The physical size of a single pixel on the imaging sensor."""
 
@@ -32,8 +47,13 @@ class AbstractSensor(
 
     @property
     @abc.abstractmethod
-    def num_overscan(self):
+    def num_overscan(self) -> int:
         """The number of overscan columns at the end of each row."""
+
+    @property
+    @abc.abstractmethod
+    def readout_noise(self) -> u.Quantity:
+        """The standard deviation of the error on each pixel value."""
 
 
 @dataclasses.dataclass(eq=False, repr=False)
@@ -41,6 +61,15 @@ class TeledyneCCD230(
     AbstractSensor,
 ):
     """The standard sensor used by the MSFC cameras."""
+
+    manufacturer: str = "Teledyne/e2v"
+    """The company which produced the sensor."""
+
+    family: str = "CCD230-42"
+    """The model number or product family of this sensor."""
+
+    serial_number: None | str = None
+    """A unique number which identifies this sensor."""
 
     width_pixel: u.Quantity = 15 * u.um
     """The physical size of a single pixel on the imaging sensor."""
@@ -50,3 +79,6 @@ class TeledyneCCD230(
 
     num_overscan: int = 2
     """The number of overscan columns at the end of each row."""
+
+    readout_noise: u.Quantity = 4 * u.electron
+    """The standard deviation of the error on each pixel value."""
