@@ -1,7 +1,8 @@
-from typing import ClassVar
+from typing import ClassVar, Literal
 import abc
 import dataclasses
 import astropy.units as u
+import named_arrays as na
 
 __all__ = [
     "TeledyneCCD230",
@@ -34,6 +35,16 @@ class AbstractSensor(
     @abc.abstractmethod
     def serial_number(self) -> None | str:
         """A unique number which identifies this sensor."""
+
+    @property
+    @abc.abstractmethod
+    def num_pixel(self) -> na.Cartesian2dVectorArray[int, int]:
+        """The number of pixels along the horizontal and vertical axes."""
+
+    @property
+    @abc.abstractmethod
+    def num_pixel_active(self):
+        """The number of pixels that are used to detect light."""
 
     @property
     @abc.abstractmethod
@@ -74,6 +85,13 @@ class TeledyneCCD230(
     width_pixel: u.Quantity = 15 * u.um
     """The physical size of a single pixel on the imaging sensor."""
 
+    num_pixel: None | na.Cartesian2dVectorArray[int, int] = None
+    """
+    The number of pixels along the horizontal and vertical axes.
+    
+    If :obj:`None`, the value ``na.Cartesian2dVectorArray(2048, 2064)`` is used.
+    """
+
     num_blank: int = 50
     """The number of blank columns at the start of each row."""
 
@@ -82,3 +100,30 @@ class TeledyneCCD230(
 
     readout_noise: u.Quantity = 4 * u.electron
     """The standard deviation of the error on each pixel value."""
+
+    readout_mode: Literal["full-frame", "transfer"] = "transfer"
+    """
+    The frame readout mode of the sensor.
+    
+    Either the entire sensor is read at the same time (``"full-frame"``),
+    or half of the sensor is used for storage (``"transfer"``).
+    """
+
+    def __post_init__(self):
+        if self.num_pixel is None:
+            self.num_pixel = na.Cartesian2dVectorArray(2048, 2064)
+
+    @property
+    def num_pixel_active(self):
+        """
+        The number of pixels that are used to detect light.
+
+        If :attr:`readout_mode` is ``"full-frame"``, then this is the same
+        as :attr:`num_pixel`.
+        If :attr:`readout_mode` is ``"transfer"``, then the vertical component
+        of :attr:`num_pixel` is divided by 2 since half of the sensor is now used
+        for charge storage.
+        """
+        result = self.num_pixel
+        if self.readout_mode == "transfer":
+            return result.replace(y=result.y / 2)
