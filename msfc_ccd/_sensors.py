@@ -85,11 +85,12 @@ class TeledyneCCD230(
     width_pixel: u.Quantity = 15 * u.um
     """The physical size of a single pixel on the imaging sensor."""
 
-    num_pixel: na.Cartesian2dVectorArray[int, int] = na.Cartesian2dVectorArray(
-        x=2048,
-        y=2064,
-    )
-    """The number of pixels along the horizontal and vertical axes."""
+    num_pixel: None | na.Cartesian2dVectorArray[int, int] = None
+    """
+    The number of pixels along the horizontal and vertical axes.
+    
+    If :obj:`None`, the value ``na.Cartesian2dVectorArray(2048, 2064)`` is used.
+    """
 
     num_blank: int = 50
     """The number of blank columns at the start of each row."""
@@ -107,6 +108,10 @@ class TeledyneCCD230(
     Either the entire sensor is read at the same time (``"full-frame"``),
     or half of the sensor is used for storage (``"transfer"``).
     """
+
+    def __post_init__(self):
+        if self.num_pixel is None:
+            self.num_pixel = na.Cartesian2dVectorArray(2048, 2064)
 
     @property
     def num_pixel_active(self):
