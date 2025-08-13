@@ -20,13 +20,13 @@ class AbstractCamera(
 
     @property
     @abc.abstractmethod
-    def gain(self) -> u.Quantity | na.AbstractScalar:
-        """The conversion factor between electrons and ADC counts."""
+    def sensor(self) -> AbstractSensor:
+        """A model of the sensor used by this camera to capture light."""
 
     @property
     @abc.abstractmethod
-    def sensor(self) -> AbstractSensor:
-        """A model of the sensor used by this camera to capture light."""
+    def gain(self) -> u.Quantity | na.AbstractScalar:
+        """The conversion factor between electrons and ADC counts."""
 
     @classmethod
     def calibrate_timedelta_exposure(cls, value: int) -> u.Quantity:
@@ -113,8 +113,18 @@ class Camera(
     physical units for various parameters such as the FPGA temperature, etc.
     """
 
+    sensor: None | AbstractSensor = None
+    """
+    A model of the sensor used by this camera to capture light.
+
+    If :obj:`None` (the default), :class:`TeledyneCCD230` will be used.
+    """
+
     gain: None | u.Quantity | na.AbstractScalar = None
     """The conversion factor between electrons and ADC counts."""
+
+    bits_adc: int = 16
+    """The number of bits supported by the analog-to-digital converter"""
 
     readout_noise: u.Quantity | na.AbstractScalar = 4 * u.DN
     """The standard deviation of the error on each pixel value."""
@@ -133,16 +143,6 @@ class Camera(
 
     timedelta_readout: u.Quantity = 1.1 * u.s
     """The time required to perform a readout operation."""
-
-    bits_adc: int = 16
-    """The number of bits supported by the analog-to-digital converter"""
-
-    sensor: None | AbstractSensor = None
-    """
-    A model of the sensor used by this camera to capture light.
-    
-    If :obj:`None` (the default), :class:`TeledyneCCD230` will be used.
-    """
 
     def __post_init__(self):
         if self.sensor is None:

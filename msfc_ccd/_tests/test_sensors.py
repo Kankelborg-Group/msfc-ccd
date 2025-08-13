@@ -7,7 +7,6 @@ class AbstractTestAbstractSensor:
 
     def test_num_tap_x(self, sensor: msfc_ccd.abc.AbstractSensor):
         result = sensor.num_tap_x
-        print(f"{result + 1=}")
         assert result == 2
 
     def test_num_tap_y(self, sensor: msfc_ccd.abc.AbstractSensor):
@@ -26,6 +25,14 @@ class AbstractTestAbstractSensor:
     def test_width_pixel(self, sensor: msfc_ccd.abc.AbstractSensor):
         assert sensor.width_pixel > 0 * u.um
 
+    def test_num_pixels(self, sensor: msfc_ccd.abc.AbstractSensor):
+        assert sensor.num_pixel.x > 0
+        assert sensor.num_pixel.y > 0
+
+    def test_num_pixels_active(self, sensor: msfc_ccd.abc.AbstractSensor):
+        assert sensor.num_pixel_active.x > 0
+        assert sensor.num_pixel_active.y > 0
+
     def test_num_blank(self, sensor: msfc_ccd.abc.AbstractSensor):
         assert isinstance(sensor.num_blank, int)
         assert sensor.num_blank > 0
@@ -41,7 +48,9 @@ class AbstractTestAbstractSensor:
 @pytest.mark.parametrize(
     argnames="sensor",
     argvalues=[
-        msfc_ccd.TeledyneCCD230(serial_number="42"),
+        msfc_ccd.TeledyneCCD230(
+            serial_number="42",
+        ),
     ],
 )
 class TestTeledyneCCD230(
