@@ -19,7 +19,7 @@ class AbstractTestAbstractSensorData(
     argvalues=[
         msfc_ccd.SensorData.from_fits(
             path=msfc_ccd.samples.path_dark_esis1,
-            camera=msfc_ccd.Camera(1 * u.electron / u.DN),
+            camera=msfc_ccd.Camera(),
         ),
         msfc_ccd.SensorData.from_fits(
             path=na.ScalarArray(
@@ -31,7 +31,7 @@ class AbstractTestAbstractSensorData(
                 ),
                 axes="channel",
             ),
-            camera=msfc_ccd.Camera(1 * u.electron / u.DN),
+            camera=msfc_ccd.Camera(),
         ),
         msfc_ccd.SensorData.from_fits(
             path=na.ScalarArray(
@@ -43,7 +43,7 @@ class AbstractTestAbstractSensorData(
                 ),
                 axes="time",
             ),
-            camera=msfc_ccd.Camera(1 * u.electron / u.DN),
+            camera=msfc_ccd.Camera(),
         ),
     ],
 )
