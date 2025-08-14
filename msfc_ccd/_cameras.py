@@ -126,9 +126,6 @@ class Camera(
     bits_adc: int = 16
     """The number of bits supported by the analog-to-digital converter"""
 
-    readout_noise: u.Quantity | na.AbstractScalar = 4 * u.DN
-    """The standard deviation of the error on each pixel value."""
-
     timedelta_exposure_min: u.Quantity = 2 * u.s
     """The minimum exposure length supported by this camera."""
 
