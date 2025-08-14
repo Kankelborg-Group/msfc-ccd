@@ -154,7 +154,7 @@ class TeledyneCCD230(
     @classmethod
     def _frac_Qd_Qdo(cls, temperature: u.Quantity | na.AbstractScalar):
         T = temperature
-        return 122 * T * np.square(T) * np.exp(-6400 * u.K / T) / u.K ** 3
+        return 122 * T * np.square(T) * np.exp(-6400 * u.K / T) / u.K**3
 
     def dark_current(
         self,
