@@ -193,6 +193,7 @@ class TeledyneCCD230(
             The temperature of the sensor.
             If :obj:`None`, the value of :attr:`temperature` is used.
 
+
         .. nblinkgallery::
             :caption: Examples
             :name: rst-link-gallery
