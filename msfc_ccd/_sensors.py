@@ -1,6 +1,7 @@
 from typing import ClassVar, Literal
 import abc
 import dataclasses
+import numpy as np
 import astropy.units as u
 import named_arrays as na
 
@@ -66,8 +67,28 @@ class AbstractSensor(
     def readout_noise(self) -> u.Quantity:
         """The standard deviation of the error on each pixel value."""
 
+    @property
+    @abc.abstractmethod
+    def temperature(self):
+        """The operating temperature of this sensor."""
 
-@dataclasses.dataclass(eq=False, repr=False)
+    def dark_current(
+        self,
+        temperature: None | u.Quantity | na.AbstractScalar = None,
+    ):
+        """
+        Calculate the rate of charge accumulation when the sensor is not illuminated.
+
+        Parameters
+        ----------
+        temperature
+            The temperature of the sensor.
+            If :obj:`None`, the value of :attr:`temperature` is used.
+
+        """
+
+
+@dataclasses.dataclass
 class TeledyneCCD230(
     AbstractSensor,
 ):
@@ -81,6 +102,13 @@ class TeledyneCCD230(
 
     serial_number: None | str = None
     """A unique number which identifies this sensor."""
+
+    grade: None | str = None
+    """
+    The quality of the device.
+
+    Grade 0 is the best possible and Grade 5 is the worst possible.
+    """
 
     width_pixel: u.Quantity = 15 * u.um
     """The physical size of a single pixel on the imaging sensor."""
@@ -109,6 +137,9 @@ class TeledyneCCD230(
     or half of the sensor is used for storage (``"transfer"``).
     """
 
+    temperature: u.Quantity | na.AbstractScalar = 248 * u.K
+    """The operating temperature of this sensor."""
+
     def __post_init__(self):
         if self.num_pixel is None:
             self.num_pixel = na.Cartesian2dVectorArray(2048, 2064)
@@ -127,3 +158,71 @@ class TeledyneCCD230(
         result = self.num_pixel
         if self.readout_mode == "transfer":
             return result.replace(y=result.y / 2)
+
+    @classmethod
+    def _frac_Qd_Qdo(cls, temperature: u.Quantity | na.AbstractScalar):
+        T = temperature
+        return 122 * T * np.square(T) * np.exp(-6400 * u.K / T) / u.K**3
+
+    def dark_current(
+        self,
+        temperature: None | u.Quantity | na.AbstractScalar = None,
+    ):
+        """
+        Calculate the rate of charge accumulation when the sensor is not illuminated.
+
+        Parameters
+        ----------
+        temperature
+            The temperature of the sensor.
+            If :obj:`None`, the value of :attr:`temperature` is used.
+
+        Examples
+        --------
+        Plot the theoretical dark current of this sensor according to the
+        datasheet.
+
+        .. jupyter-execute::
+
+            import matplotlib.pyplot as plt
+            import astropy.units as u
+            import astropy.visualization
+            import named_arrays as na
+            import msfc_ccd
+
+            # Define a grid of temperatures to sample
+            temperature = na.linspace(200, 300, axis="temperature", num=101) * u.K
+
+            # Initialize the sensor model
+            sensor = msfc_ccd.TeledyneCCD230()
+
+            # Compute the dark current of the sensor
+            # given the grid of temperatures
+            dark_current = sensor.dark_current(temperature)
+
+            # Plot the results
+            with astropy.visualization.quantity_support():
+                fig, ax = plt.subplots()
+                ax2 = ax.twiny()
+                na.plt.plot(
+                    temperature,
+                    dark_current,
+                    ax=ax,
+                )
+                na.plt.plot(
+                    temperature.to(u.deg_C, equivalencies=u.temperature()),
+                    dark_current,
+                    ax=ax2,
+                )
+                ax.set_yscale("log")
+                ax.set_xlabel(f"temperature ({ax.get_xlabel()})")
+                ax2.set_xlabel(f"temperature ({ax2.get_xlabel()})")
+                ax.set_ylabel(f"dark current ({ax.get_ylabel()})")
+
+        """
+        if temperature is None:
+            temperature = self.temperature
+        Q_248K = 0.2 * u.electron / u.s
+        f = self._frac_Qd_Qdo(248 * u.K)
+        Q_do = Q_248K / f
+        return Q_do * self._frac_Qd_Qdo(temperature)

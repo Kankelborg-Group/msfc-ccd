@@ -44,6 +44,12 @@ class AbstractTestAbstractSensor:
     def test_readout_noise(self, sensor: msfc_ccd.abc.AbstractSensor):
         assert sensor.readout_noise > 0 * u.electron
 
+    def test_temperature(self, sensor: msfc_ccd.abc.AbstractSensor):
+        assert sensor.temperature > 0 * u.K
+
+    def test_dark_current(self, sensor: msfc_ccd.abc.AbstractSensor):
+        assert sensor.dark_current() > 0 * u.electron / u.s
+
 
 @pytest.mark.parametrize(
     argnames="sensor",
