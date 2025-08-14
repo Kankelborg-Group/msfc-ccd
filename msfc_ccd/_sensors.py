@@ -64,6 +64,11 @@ class AbstractSensor(
 
     @property
     @abc.abstractmethod
+    def cte(self) -> u.Quantity:
+        """The charge transfer efficiency of the sensor."""
+
+    @property
+    @abc.abstractmethod
     def readout_noise(self) -> u.Quantity:
         """The standard deviation of the error on each pixel value."""
 
@@ -124,6 +129,9 @@ class TeledyneCCD230(
 
     num_overscan: int = 2
     """The number of overscan columns at the end of each row."""
+
+    cte: u.Quantity = 99.9995 * u.percent
+    """The charge transfer efficiency of the sensor."""
 
     readout_noise: u.Quantity = 4 * u.electron
     """The standard deviation of the error on each pixel value."""
