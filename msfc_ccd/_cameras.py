@@ -28,6 +28,11 @@ class AbstractCamera(
     def gain(self) -> u.Quantity | na.AbstractScalar:
         """The conversion factor between electrons and ADC counts."""
 
+    @property
+    @abc.abstractmethod
+    def timedelta_exposure(self) -> u.Quantity | na.AbstractScalar:
+        """The current exposure length."""
+
     @classmethod
     def calibrate_timedelta_exposure(cls, value: int) -> u.Quantity:
         """
@@ -125,6 +130,9 @@ class Camera(
 
     bits_adc: int = 16
     """The number of bits supported by the analog-to-digital converter"""
+
+    timedelta_exposure: u.Quantity = 10 * u.s
+    """The current exposure length."""
 
     timedelta_exposure_min: u.Quantity = 2 * u.s
     """The minimum exposure length supported by this camera."""
