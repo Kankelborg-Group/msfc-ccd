@@ -41,6 +41,9 @@ class AbstractTestAbstractSensor:
         assert isinstance(sensor.num_overscan, int)
         assert sensor.num_overscan > 0
 
+    def test_cte(self, sensor: msfc_ccd.abc.AbstractSensor):
+        assert sensor.cte > 0
+
     def test_readout_noise(self, sensor: msfc_ccd.abc.AbstractSensor):
         assert sensor.readout_noise > 0 * u.electron
 
