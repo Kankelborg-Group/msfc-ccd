@@ -77,8 +77,7 @@ class AbstractSensor(
         temperature: None | u.Quantity | na.AbstractScalar = None,
     ):
         """
-        Calculate the rate of charge accumulation when the sensor is not
-        illuminated.
+        Calculate the rate of charge accumulation when the sensor is not illuminated.
 
         Parameters
         ----------
@@ -170,8 +169,7 @@ class TeledyneCCD230(
         temperature: None | u.Quantity | na.AbstractScalar = None,
     ):
         """
-        Calculate the rate of charge accumulation when the sensor is not
-        illuminated.
+        Calculate the rate of charge accumulation when the sensor is not illuminated.
 
         Parameters
         ----------
