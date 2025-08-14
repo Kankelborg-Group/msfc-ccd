@@ -53,6 +53,12 @@ class AbstractSensor(
         """The physical size of a single pixel on the imaging sensor."""
 
     @property
+    def width_active(self):
+        """The physical size of the light sensitive area of the sensor."""
+        result = self.width_pixel * self.num_pixel_active
+        return result.to(u.mm)
+
+    @property
     @abc.abstractmethod
     def num_blank(self) -> int:
         """The number of blank columns at the start of each row."""
