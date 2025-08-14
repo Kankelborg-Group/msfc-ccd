@@ -65,4 +65,7 @@ class AbstractTestAbstractSensor:
 class TestTeledyneCCD230(
     AbstractTestAbstractSensor,
 ):
-    pass
+
+    def test_width_package(self, sensor: msfc_ccd.TeledyneCCD230):
+        assert sensor.width_package.x > 0 * u.mm
+        assert sensor.width_package.y > 0 * u.mm

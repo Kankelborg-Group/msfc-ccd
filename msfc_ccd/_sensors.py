@@ -175,6 +175,14 @@ class TeledyneCCD230(
         if self.readout_mode == "transfer":
             return result.replace(y=result.y / 2)
 
+    @property
+    def width_package(self) -> na.Cartesian2dVectorArray:
+        """The vertical and horizontal width of the physical sensor package."""
+        return na.Cartesian2dVectorArray(
+            x=self.width_package_x,
+            y=self.width_package_y,
+        )
+
     @classmethod
     def _frac_Qd_Qdo(cls, temperature: u.Quantity | na.AbstractScalar):
         T = temperature
