@@ -25,6 +25,9 @@ class AbstractTestAbstractSensor:
     def test_width_pixel(self, sensor: msfc_ccd.abc.AbstractSensor):
         assert sensor.width_pixel > 0 * u.um
 
+    def test_width_active(self, sensor: msfc_ccd.abc.AbstractSensor):
+        assert sensor.width_active > 0 * u.um
+
     def test_num_pixels(self, sensor: msfc_ccd.abc.AbstractSensor):
         assert sensor.num_pixel.x > 0
         assert sensor.num_pixel.y > 0
