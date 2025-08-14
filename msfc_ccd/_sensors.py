@@ -147,10 +147,10 @@ class TeledyneCCD230(
     temperature: u.Quantity | na.AbstractScalar = 248 * u.K
     """The operating temperature of this sensor."""
 
-    width_package: u.Quantity = 42 * u.mm
+    width_package_x: u.Quantity = 42 * u.mm
     """The horizontal size of the physical sensor package."""
 
-    height_package: u.Quantity = 61 * u.mm
+    width_package_y: u.Quantity = 61 * u.mm
     """The vertical size of the physical sensor package."""
 
     @property
