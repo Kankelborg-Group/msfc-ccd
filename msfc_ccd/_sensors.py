@@ -220,6 +220,7 @@ class TeledyneCCD230(
                 ax2.set_xlabel(f"temperature ({ax2.get_xlabel()})")
                 ax.set_ylabel(f"dark current ({ax.get_ylabel()})")
         """
+
         if temperature is None:
             temperature = self.temperature
         Q_248K = 0.2 * u.electron / u.s
