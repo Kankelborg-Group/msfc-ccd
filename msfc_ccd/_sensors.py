@@ -85,6 +85,7 @@ class AbstractSensor(
         temperature
             The temperature of the sensor.
             If :obj:`None`, the value of :attr:`temperature` is used.
+
         """
 
 
@@ -219,8 +220,8 @@ class TeledyneCCD230(
                 ax.set_xlabel(f"temperature ({ax.get_xlabel()})")
                 ax2.set_xlabel(f"temperature ({ax2.get_xlabel()})")
                 ax.set_ylabel(f"dark current ({ax.get_ylabel()})")
-        """
 
+        """
         if temperature is None:
             temperature = self.temperature
         Q_248K = 0.2 * u.electron / u.s
