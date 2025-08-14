@@ -171,7 +171,6 @@ class TeledyneCCD230(
 
         Examples
         --------
-
         Plot the theoretical dark current of this sensor according to the
         datasheet.
 
