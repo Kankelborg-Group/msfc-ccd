@@ -31,6 +31,7 @@ justify the decisions made in this package.
     :maxdepth: 1
 
     reports/bias
+    reports/dark-current
 
 |
 
