@@ -77,7 +77,8 @@ class AbstractSensor(
         temperature: None | u.Quantity | na.AbstractScalar = None,
     ):
         """
-        The rate of charge accumulation when the sensor is not illuminated.
+        Calculate the rate of charge accumulation when the sensor is not
+        illuminated.
 
         Parameters
         ----------
@@ -101,6 +102,13 @@ class TeledyneCCD230(
 
     serial_number: None | str = None
     """A unique number which identifies this sensor."""
+
+    grade: None | str = None
+    """
+    The quality of the device.
+
+    Grade 0 is the best possible and Grade 5 is the worst possible.
+    """
 
     width_pixel: u.Quantity = 15 * u.um
     """The physical size of a single pixel on the imaging sensor."""
@@ -161,7 +169,8 @@ class TeledyneCCD230(
         temperature: None | u.Quantity | na.AbstractScalar = None,
     ):
         """
-        The rate of charge accumulation when the sensor is not illuminated.
+        Calculate the rate of charge accumulation when the sensor is not
+        illuminated.
 
         Parameters
         ----------
