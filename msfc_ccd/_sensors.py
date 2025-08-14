@@ -193,48 +193,12 @@ class TeledyneCCD230(
             The temperature of the sensor.
             If :obj:`None`, the value of :attr:`temperature` is used.
 
-        Examples
-        --------
-        Plot the theoretical dark current of this sensor according to the
-        datasheet.
 
-        .. jupyter-execute::
+        .. nblinkgallery::
+            :caption: Examples
+            :name: rst-link-gallery
 
-            import matplotlib.pyplot as plt
-            import astropy.units as u
-            import astropy.visualization
-            import named_arrays as na
-            import msfc_ccd
-
-            # Define a grid of temperatures to sample
-            temperature = na.linspace(200, 300, axis="temperature", num=101) * u.K
-
-            # Initialize the sensor model
-            sensor = msfc_ccd.TeledyneCCD230()
-
-            # Compute the dark current of the sensor
-            # given the grid of temperatures
-            dark_current = sensor.dark_current(temperature)
-
-            # Plot the results
-            with astropy.visualization.quantity_support():
-                fig, ax = plt.subplots()
-                ax2 = ax.twiny()
-                na.plt.plot(
-                    temperature,
-                    dark_current,
-                    ax=ax,
-                )
-                na.plt.plot(
-                    temperature.to(u.deg_C, equivalencies=u.temperature()),
-                    dark_current,
-                    ax=ax2,
-                )
-                ax.set_yscale("log")
-                ax.set_xlabel(f"temperature ({ax.get_xlabel()})")
-                ax2.set_xlabel(f"temperature ({ax2.get_xlabel()})")
-                ax.set_ylabel(f"dark current ({ax.get_ylabel()})")
-
+            ../reports/dark-current
         """
         if temperature is None:
             temperature = self.temperature
