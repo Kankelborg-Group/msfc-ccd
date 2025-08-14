@@ -47,7 +47,7 @@ class AbstractTestAbstractSensor:
     def test_temperature(self, sensor: msfc_ccd.abc.AbstractSensor):
         assert sensor.temperature > 0 * u.K
 
-    def dark_current(self, sensor: msfc_ccd.abc.AbstractSensor):
+    def test_dark_current(self, sensor: msfc_ccd.abc.AbstractSensor):
         assert sensor.dark_current() > 0 * u.electron / u.s
 
 
