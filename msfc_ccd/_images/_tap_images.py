@@ -233,4 +233,3 @@ class TapData(
 
     axis_tap_y: str = dataclasses.field(default="tap_y", kw_only=True)
     """The name of the vertical tap axis."""
-
