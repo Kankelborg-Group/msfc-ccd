@@ -59,30 +59,35 @@ class TestImageHeader:
         assert isinstance(b, msfc_ccd.ImageHeader)
         assert np.all(a.time[item] == b.time)
 
-    def test_time(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_time_start(self, a: msfc_ccd.ImageHeader):
+        result = a.time_start
+        if not isinstance(result, astropy.time.Time):
+            assert isinstance(result.ndarray, astropy.time.Time)
+
+    def test_time(self, a: msfc_ccd.ImageHeader):
         result = a.time
         if not isinstance(result, astropy.time.Time):
             assert isinstance(result.ndarray, astropy.time.Time)
 
-    def test_timedelta(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_timedelta(self, a: msfc_ccd.ImageHeader):
         result = a.timedelta
         assert np.all(result >= 1 * u.s)
         assert np.all(result < 1000 * u.s)
 
-    def test_timedelta_requested(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_timedelta_requested(self, a: msfc_ccd.ImageHeader):
         result = a.timedelta
         assert np.all(result >= 1 * u.s)
         assert np.all(result < 1000 * u.s)
 
-    def test_serial_number(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_serial_number(self, a: msfc_ccd.ImageHeader):
         result = a.serial_number
         assert isinstance(result, (str, na.AbstractScalar))
 
-    def test_run_mode(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_run_mode(self, a: msfc_ccd.ImageHeader):
         result = a.run_mode
         assert isinstance(result, (str, na.AbstractScalar))
 
-    def test_status(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_status(self, a: msfc_ccd.ImageHeader):
         result = a.status
         assert isinstance(result, (str, na.AbstractScalar))
 
@@ -91,37 +96,37 @@ class TestImageHeader:
         assert np.all(result >= 0 * u.V)
         assert np.all(result < 50 * u.V)
 
-    def test_voltage_fpga_vccaux(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_voltage_fpga_vccaux(self, a: msfc_ccd.ImageHeader):
         result = a.voltage_fpga_vccaux
         assert np.all(result >= 0 * u.V)
         assert np.all(result < 50 * u.V)
 
-    def test_voltage_fpga_vccbram(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_voltage_fpga_vccbram(self, a: msfc_ccd.ImageHeader):
         result = a.voltage_fpga_vccbram
         assert np.all(result >= 0 * u.V)
         assert np.all(result < 50 * u.V)
 
-    def test_temperature_fpga(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_temperature_fpga(self, a: msfc_ccd.ImageHeader):
         result = a.temperature_fpga
         assert np.all(result >= 0 * u.deg_C)
         assert np.all(result < 100 * u.deg_C)
 
-    def test_temperature_adc_1(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_temperature_adc_1(self, a: msfc_ccd.ImageHeader):
         result = a.temperature_adc_1
         assert np.all(result >= 0 * u.deg_C)
         assert np.all(result < 100 * u.deg_C)
 
-    def test_temperature_adc_2(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_temperature_adc_2(self, a: msfc_ccd.ImageHeader):
         result = a.temperature_adc_2
         assert np.all(result >= 0 * u.deg_C)
         assert np.all(result < 100 * u.deg_C)
 
-    def test_temperature_adc_3(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_temperature_adc_3(self, a: msfc_ccd.ImageHeader):
         result = a.temperature_adc_3
         assert np.all(result >= 0 * u.deg_C)
         assert np.all(result < 100 * u.deg_C)
 
-    def test_temperature_adc_4(self, a: msfc_ccd.abc.AbstractImageData):
+    def test_temperature_adc_4(self, a: msfc_ccd.ImageHeader):
         result = a.temperature_adc_4
         assert np.all(result >= 0 * u.deg_C)
         assert np.all(result < 100 * u.deg_C)
