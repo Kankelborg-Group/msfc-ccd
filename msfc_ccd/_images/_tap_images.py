@@ -219,17 +219,18 @@ class TapData(
     outputs: na.ScalarArray = dataclasses.MISSING
     """The underlying array storing the image data."""
 
-    axis_x: str = dataclasses.MISSING
-    """The name of the horizontal axis."""
-
-    axis_y: str = dataclasses.MISSING
-    """The name of the vertical axis."""
-
-    axis_tap_x: str = dataclasses.MISSING
-    """The name of the horizontal tap axis."""
-
-    axis_tap_y: str = dataclasses.MISSING
-    """The name of the vertical tap axis."""
-
     camera: AbstractCamera = dataclasses.MISSING
     """A model of the camera used to capture these images."""
+
+    axis_x: str = dataclasses.field(default="detector_x", kw_only=True)
+    """The name of the horizontal axis."""
+
+    axis_y: str = dataclasses.field(default="detector_y", kw_only=True)
+    """The name of the vertical axis."""
+
+    axis_tap_x: str = dataclasses.field(default="tap_x", kw_only=True)
+    """The name of the horizontal tap axis."""
+
+    axis_tap_y: str = dataclasses.field(default="tap_y", kw_only=True)
+    """The name of the vertical tap axis."""
+
