@@ -141,14 +141,14 @@ class SensorData(
     outputs: na.ScalarArray = dataclasses.MISSING
     """The underlying array storing the image data."""
 
-    axis_x: str = dataclasses.MISSING
-    """The name of the horizontal axis."""
-
-    axis_y: str = dataclasses.MISSING
-    """The name of the vertical axis."""
-
     camera: AbstractCamera = dataclasses.MISSING
     """A model of the sensor used to capture these images."""
+
+    axis_x: str = dataclasses.field(default="detector_x", kw_only=True)
+    """The name of the horizontal axis."""
+
+    axis_y: str = dataclasses.field(default="detector_y", kw_only=True)
+    """The name of the vertical axis."""
 
     @classmethod
     def from_fits(
