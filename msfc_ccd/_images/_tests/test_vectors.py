@@ -15,7 +15,7 @@ import msfc_ccd
                 stop=32,
                 axis=na.Cartesian2dVectorArray(x="x", y="y"),
             ),
-            time=na.ScalarArray(
+            time_start=na.ScalarArray(
                 ndarray=np.linspace(
                     astropy.time.Time("2024-03-25T20:49"),
                     astropy.time.Time("2024-03-25T21:49"),
@@ -68,6 +68,13 @@ class TestImageHeader:
         result = a.time
         if not isinstance(result, astropy.time.Time):
             assert isinstance(result.ndarray, astropy.time.Time)
+        assert np.all(result > a.time_start)
+
+    def test_time_end(self, a: msfc_ccd.ImageHeader):
+        result = a.time_end
+        if not isinstance(result, astropy.time.Time):
+            assert isinstance(result.ndarray, astropy.time.Time)
+        assert np.all(result > a.time)
 
     def test_timedelta(self, a: msfc_ccd.ImageHeader):
         result = a.timedelta
