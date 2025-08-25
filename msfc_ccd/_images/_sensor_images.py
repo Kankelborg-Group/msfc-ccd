@@ -177,7 +177,7 @@ class SensorData(
         """
         path = na.as_named_array(path)
 
-        time = na.ScalarArray.zeros(na.shape(path))
+        time_start = na.ScalarArray.zeros(na.shape(path))
 
         timedelta = np.empty_like(path, dtype=np.int64)
         timedelta_requested = np.empty_like(path, dtype=float) << u.s
@@ -211,7 +211,7 @@ class SensorData(
             data[index] = data_index
 
             header = hdu.header
-            time[index] = astropy.time.Time(header["IMG_TS"]).jd
+            time_start[index] = astropy.time.Time(header["IMG_TS"]).jd
             timedelta[index] = header["MEAS_EXP"]
             timedelta_requested[index] = header["IMG_EXP"] * u.ms
             serial_number[index] = header.get("CAM_SN")
@@ -251,11 +251,11 @@ class SensorData(
         )
 
         t = astropy.time.Time(
-            val=time.ndarray,
+            val=time_start.ndarray,
             format="jd",
         )
         t.format = "isot"
-        time.ndarray = t
+        time_start.ndarray = t
 
         for axis in serial_number.shape:
             sn0 = serial_number[{axis: 0}]
@@ -265,7 +265,7 @@ class SensorData(
         return cls(
             inputs=ImageHeader(
                 pixel=pixel,
-                time=time,
+                time_start=time_start,
                 timedelta=timedelta,
                 timedelta_requested=timedelta_requested,
                 serial_number=serial_number,

@@ -19,8 +19,8 @@ class ImageHeader(
     pixel: na.AbstractCartesian2dVectorArray = dataclasses.MISSING
     """The indices of each pixel in the image."""
 
-    time: astropy.time.Time | na.AbstractScalar = dataclasses.MISSING
-    """The time in UTC at the midpoint of the exposure."""
+    time_start: astropy.time.Time | na.AbstractScalar = dataclasses.MISSING
+    """The time in UTC at the start of the exposure."""
 
     timedelta: u.Quantity | na.AbstractScalar = dataclasses.MISSING
     """The measured exposure time of each image."""
@@ -81,7 +81,7 @@ class ImageHeader(
     ) -> Self:
         return cls(
             pixel=scalar,
-            time=scalar,
+            time_start=scalar,
             timedelta=scalar,
             timedelta_requested=scalar,
             serial_number=scalar,
@@ -96,3 +96,19 @@ class ImageHeader(
             temperature_adc_3=scalar,
             temperature_adc_4=scalar,
         )
+
+    @property
+    def time(self) -> astropy.time.Time | na.ScalarArray:
+        """The time in UTC at the midpoint of the exposure."""
+        time_start = self.time_start
+        axes = time_start.axes
+        result = time_start.ndarray + self.timedelta.ndarray_aligned(axes) / 2
+        return na.ScalarArray(result, axes=axes)
+
+    @property
+    def time_end(self) -> astropy.time.Time | na.ScalarArray:
+        """The time in UTC at the end of the exposure."""
+        time_start = self.time_start
+        axes = time_start.axes
+        result = time_start.ndarray + self.timedelta.ndarray_aligned(axes)
+        return na.ScalarArray(result, axes=axes)
