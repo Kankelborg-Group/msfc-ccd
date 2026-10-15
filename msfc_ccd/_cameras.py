@@ -189,7 +189,7 @@ class Camera(
     timedelta_exposure: u.Quantity = 10 * u.s
     """The current exposure length."""
 
-    timedelta_exposure_min: u.Quantity = 2 * u.s
+    timedelta_exposure_min: u.Quantity = 1.2 * u.s
     """The minimum exposure length supported by this camera."""
 
     timedelta_exposure_max: u.Quantity = 600 * u.s
