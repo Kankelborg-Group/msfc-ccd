@@ -168,8 +168,17 @@ class TeledyneCCD230(
     cte: u.Quantity = 99.9995 * u.percent
     """The charge transfer efficiency of the sensor."""
 
-    readout_noise: u.Quantity = 4 * u.electron
-    """The standard deviation of the error on each pixel value."""
+    readout_noise: u.Quantity = 10.5 * u.electron
+    """
+    The standard deviation of the error on each pixel value.
+
+    The default is the readout noise of the four cameras of the first flight
+    of ESIS (SN6, SN7, SN9, and SN10), tested at MSFC by Laurel Rachmeler in
+    July 2017. It is the quadrature mean over their sixteen taps, which range
+    from 9.7 to 11.1 electrons: the standard deviation of the pixels outside
+    the image area in a set of dark frames, about 4 DN, times the gain of each
+    tap fitted to the K-alpha peak of an Fe-55 source.
+    """
 
     readout_mode: Literal["full-frame", "transfer"] = "transfer"
     """
